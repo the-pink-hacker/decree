@@ -35,7 +35,7 @@ public class ClearSpawnPointCommand implements CommandRegistrationCallback {
         int i = 0;
 
         for (ServerPlayerEntity player : players) {
-            player.setSpawnPoint(World.OVERWORLD, null, 0, false, false);
+            player.setSpawnPoint(null, false);
             i++;
         }
 
