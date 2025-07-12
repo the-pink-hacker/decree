@@ -6,7 +6,8 @@
   "mixins": [
     "entity.ItemEntityMixin",
     "entity.mob.EndermanEntityPickUpBlockGoalMixin",
-    "entity.mob.EndermanEntityPlaceBlockGoalMixin"
+    "entity.mob.EndermanEntityPlaceBlockGoalMixin",
+    "server.world.ServerWorldMixin"
   ],
   "client": [],
   "injectors": {

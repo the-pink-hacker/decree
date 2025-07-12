@@ -36,6 +36,13 @@ public class LanguageProvider extends FabricLanguageProvider {
                 "Controls how long it takes for an item to despawn."
         );
 
+        add(
+                builder,
+                DecreeGameRules.DO_MOB_EXPLOSION_GRIEFING,
+                "Do Mob Explosions Griefing",
+                "Whether mob explosions damage the world."
+        );
+
         add(builder, NameCommand.ENTITY_FAILED, "Failed to name entity");
         add(builder, NameCommand.ENTITY_REMOVE_FAILED, "Failed to remove entity name");
         add(builder, NameCommand.ITEM_FAILED, "Failed to name item");

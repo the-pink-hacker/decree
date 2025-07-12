@@ -3,6 +3,7 @@ package com.thepinkhacker.decree.mixin.entity;
 import com.thepinkhacker.decree.world.DecreeGameRules;
 import net.minecraft.entity.ItemEntity;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
@@ -40,6 +41,7 @@ public abstract class ItemEntityMixin {
         return getDespawnAge() - 1;
     }
 
+    @Unique
     private int getDespawnAge() {
         return ((ItemEntity)(Object)this).getServer().getGameRules().getInt(DecreeGameRules.ITEM_DESPAWN_AGE);
     }
