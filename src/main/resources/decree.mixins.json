@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "entity.ItemEntityMixin",
+    "entity.LivingEntityMixin",
     "entity.mob.EndermanEntityPickUpBlockGoalMixin",
     "entity.mob.EndermanEntityPlaceBlockGoalMixin",
     "server.world.ServerWorldMixin"

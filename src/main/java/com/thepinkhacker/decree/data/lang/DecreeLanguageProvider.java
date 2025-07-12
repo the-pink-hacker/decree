@@ -10,8 +10,8 @@ import net.minecraft.world.GameRules;
 
 import java.util.concurrent.CompletableFuture;
 
-public class LanguageProvider extends FabricLanguageProvider {
-    public LanguageProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+public class DecreeLanguageProvider extends FabricLanguageProvider {
+    public DecreeLanguageProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
         super(dataOutput, registryLookup);
     }
 
