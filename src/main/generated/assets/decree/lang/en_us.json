@@ -66,6 +66,8 @@
   "gamerule.doEndermanPickup.description": "Allow Endermen to pickup blocks.",
   "gamerule.doEndermanPlace": "Do Enderman Place",
   "gamerule.doEndermanPlace.description": "Allow Endermen to place blocks.",
+  "gamerule.doMobExplosionGriefing": "Do Mob Explosions Griefing",
+  "gamerule.doMobExplosionGriefing.description": "Whether mob explosions damage the world.",
   "gamerule.itemDespawnAge": "Item Despawn Age",
   "gamerule.itemDespawnAge.description": "Controls how long it takes for an item to despawn."
 }

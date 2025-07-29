@@ -10,8 +10,8 @@ import net.minecraft.world.GameRules;
 
 import java.util.concurrent.CompletableFuture;
 
-public class LanguageProvider extends FabricLanguageProvider {
-    public LanguageProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+public class DecreeLanguageProvider extends FabricLanguageProvider {
+    public DecreeLanguageProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
         super(dataOutput, registryLookup);
     }
 
@@ -40,6 +40,13 @@ public class LanguageProvider extends FabricLanguageProvider {
                 DecreeGameRules.DO_NETHER_PORTAL_MOB_SPAWN,
                 "Do Nether Portal Mob Spawn",
                 "Enables zombified piglins randomly spawning from nether portals in the overworld."
+        );
+
+        add(
+                builder,
+                DecreeGameRules.DO_MOB_EXPLOSION_GRIEFING,
+                "Do Mob Explosions Griefing",
+                "Whether mob explosions damage the world."
         );
 
         add(builder, NameCommand.ENTITY_FAILED, "Failed to name entity");

@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(EndermanEntity.PickUpBlockGoal.class)
-public class EndermanEntityPickUpBlockGoalMixin {
+public abstract class EndermanEntityPickUpBlockGoalMixin {
     @Shadow @Final private EndermanEntity enderman;
 
     @Inject(
@@ -19,7 +19,7 @@ public class EndermanEntityPickUpBlockGoalMixin {
             at = @At("RETURN"),
             cancellable = true
     )
-    private void commandsplus_gamerule_check(CallbackInfoReturnable<Boolean> cir) {
+    private void decree_gamerule_check(CallbackInfoReturnable<Boolean> cir) {
         if (this.enderman.getWorld() instanceof ServerWorld world) {
             if (!world.getGameRules().getBoolean(DecreeGameRules.DO_ENDERMAN_PICKUP)) {
                 cir.setReturnValue(false);

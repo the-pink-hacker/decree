@@ -75,7 +75,7 @@ public class RideCommand implements CommandRegistrationCallback {
                         )
                         .then(CommandManager.literal("summon_rider")
                                 .then(CommandManager.argument("entity", RegistryEntryReferenceArgumentType.registryEntry(registryAccess, RegistryKeys.ENTITY_TYPE))
-                                        .suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
+                                        .suggests(SuggestionProviders.cast(SuggestionProviders.SUMMONABLE_ENTITIES))
                                         .executes(context -> summonRider(
                                                 context.getSource(),
                                                 EntityArgumentType.getEntity(context, "riders"),
@@ -85,7 +85,7 @@ public class RideCommand implements CommandRegistrationCallback {
                         )
                         .then(CommandManager.literal("summon_ride")
                                 .then(CommandManager.argument("entity", RegistryEntryReferenceArgumentType.registryEntry(registryAccess, RegistryKeys.ENTITY_TYPE))
-                                        .suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
+                                        .suggests(SuggestionProviders.cast(SuggestionProviders.SUMMONABLE_ENTITIES))
                                         .executes(context -> summonRide(
                                                 context.getSource(),
                                                 EntityArgumentType.getEntity(context, "riders"),

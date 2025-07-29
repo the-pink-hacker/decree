@@ -24,6 +24,7 @@ public class TimeRule extends GameRules.IntRule {
                 type -> new TimeRule(type, initialValue),
                 changeCallback,
                 GameRules.Visitor::visitInt,
+                GameRules.IntRule.class,
                 FeatureSet.empty()
         );
     }

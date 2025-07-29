@@ -6,8 +6,10 @@
   "mixins": [
     "block.NetherPortalBlockMixin",
     "entity.ItemEntityMixin",
+    "entity.LivingEntityMixin",
     "entity.mob.EndermanEntityPickUpBlockGoalMixin",
-    "entity.mob.EndermanEntityPlaceBlockGoalMixin"
+    "entity.mob.EndermanEntityPlaceBlockGoalMixin",
+    "server.world.ServerWorldMixin"
   ],
   "client": [],
   "injectors": {

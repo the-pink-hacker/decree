@@ -158,18 +158,16 @@ public class HeadCommand implements CommandRegistrationCallback {
     private static Text copyText(String key, String copyText) {
         return Text.translatable(
                 key,
-                Texts.bracketed(Text.literal(String.valueOf(copyText))
+                Texts.bracketed(Text.literal(copyText)
                         .styled((style) -> style
                                 .withColor(Formatting.GREEN)
-                                .withClickEvent(new ClickEvent(
-                                        ClickEvent.Action.COPY_TO_CLIPBOARD,
-                                        String.valueOf(copyText)
+                                .withClickEvent(new ClickEvent.CopyToClipboard(
+                                        copyText
                                 ))
-                                .withHoverEvent(new HoverEvent(
-                                        HoverEvent.Action.SHOW_TEXT,
+                                .withHoverEvent(new HoverEvent.ShowText(
                                         Text.translatable(copyText)
                                 ))
-                                .withInsertion(String.valueOf(copyText))
+                                .withInsertion(copyText)
                         )
                 )
         );
