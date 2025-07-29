@@ -22,6 +22,12 @@ public class DecreeGameRules {
             GameRules.BooleanRule.create(true)
     );
 
+    public static final GameRules.Key<GameRules.BooleanRule> DO_NETHER_PORTAL_MOB_SPAWN = GameRuleRegistry.register(
+            "doNetherPortalMobSpawn",
+            GameRules.Category.MOBS,
+            GameRules.BooleanRule.create(true)
+    );
+
     // Java is weird and won't init the variables unless this runs
     // Otherwise it would try to init after the registry is frozen
     public static void register() {}

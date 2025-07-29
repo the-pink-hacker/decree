@@ -35,6 +35,12 @@ public class LanguageProvider extends FabricLanguageProvider {
                 "Item Despawn Age",
                 "Controls how long it takes for an item to despawn."
         );
+        add(
+                builder,
+                DecreeGameRules.DO_NETHER_PORTAL_MOB_SPAWN,
+                "Do Nether Portal Mob Spawn",
+                "Enables zombified piglins randomly spawning from nether portals in the overworld."
+        );
 
         add(builder, NameCommand.ENTITY_FAILED, "Failed to name entity");
         add(builder, NameCommand.ENTITY_REMOVE_FAILED, "Failed to remove entity name");
