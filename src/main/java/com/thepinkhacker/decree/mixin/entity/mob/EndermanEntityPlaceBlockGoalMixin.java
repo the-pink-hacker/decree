@@ -21,7 +21,7 @@ public abstract class EndermanEntityPlaceBlockGoalMixin {
             at = @At("RETURN"),
             cancellable = true
     )
-    private void decree_gamerule_check(CallbackInfoReturnable<Boolean> cir) {
+    private void decreeGameruleCheck(CallbackInfoReturnable<Boolean> cir) {
         if (this.enderman.getWorld() instanceof ServerWorld world) {
             if (!world.getGameRules().getBoolean(DecreeGameRules.DO_ENDERMAN_PLACE)) {
                 cir.setReturnValue(false);

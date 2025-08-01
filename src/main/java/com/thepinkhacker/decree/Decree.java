@@ -17,11 +17,14 @@ import org.apache.logging.log4j.Logger;
 public class Decree implements ModInitializer {
     public static final String MOD_ID = "decree";
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
+    private static final boolean CLIENT_REQUIRED = true;
 
     @Override
     public void onInitialize() {
         CommandConfigs.initialize();
-        DecreeArgumentTypes.register();
+        if (CLIENT_REQUIRED) {
+            DecreeArgumentTypes.register();
+        }
         DecreeGameRules.register();
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
@@ -31,18 +34,26 @@ public class Decree implements ModInitializer {
                     environment,
                     new ClearSpawnPointCommand(),
                     new DayLockCommand(),
-                    new GameRulePresetCommand(),
                     new HeadCommand(),
                     new HealthCommand(),
                     new HungerCommand(),
                     new NameCommand(),
-                    new RideCommand(),
                     new SetOwnerCommand(),
                     new ToggleDownfallCommand(),
                     new StopCommand()
             );
 
-            LOGGER.info("Registered commands+.");
+            if (CLIENT_REQUIRED) {
+                registerCommands(
+                        dispatcher,
+                        registryAccess,
+                        environment,
+                        new GameRulePresetCommand(),
+                        new RideCommand()
+                );
+            }
+
+            LOGGER.info("Registered Decree.");
         });
     }
 

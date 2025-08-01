@@ -15,10 +15,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class NetherPortalBlockMixin {
     @Inject(
             method = "randomTick(Lnet/minecraft/block/BlockState;Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/random/Random;)V",
-            at = @At("HEAD"),
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/GameRules;getBoolean(Lnet/minecraft/world/GameRules$Key;)Z"
+            ),
             cancellable = true
     )
-    private void decree_piglin_check(BlockState state, ServerWorld world, BlockPos pos, Random random, CallbackInfo ci) {
+    private void decreePiglinCheck(BlockState state, ServerWorld world, BlockPos pos, Random random, CallbackInfo ci) {
         if (!world.getGameRules().getBoolean(DecreeGameRules.DO_NETHER_PORTAL_MOB_SPAWN)) {
             ci.cancel();
         }
