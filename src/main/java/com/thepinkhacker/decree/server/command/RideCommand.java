@@ -110,7 +110,7 @@ public class RideCommand implements CommandRegistrationCallback {
 
         for (Entity rider : riders) {
             // Teleports ride to rider based on teleport rule
-            if (teleportRule == TeleportRuleArgumentType.TeleportRule.TELEPORT_RIDE) ride.setPosition(rider.getPos());
+            if (teleportRule == TeleportRuleArgumentType.TeleportRule.TELEPORT_RIDE) ride.setPosition(rider.getEntityPos());
 
             if (!rider.hasVehicle()) {
                 rider.startRiding(ride);
@@ -199,7 +199,7 @@ public class RideCommand implements CommandRegistrationCallback {
 
             ServerWorld world = source.getWorld();
 
-            Vec3d ridePos = ride.getPos();
+            Vec3d ridePos = ride.getEntityPos();
 
             Entity rider = EntityType.loadEntityWithPassengers(nbt, world, SpawnReason.COMMAND, entity -> {
                 entity.setPosition(ridePos);
@@ -237,7 +237,7 @@ public class RideCommand implements CommandRegistrationCallback {
 
         ServerWorld world = source.getWorld();
 
-        Vec3d riderPos = rider.getPos();
+        Vec3d riderPos = rider.getEntityPos();
 
         Entity ride = EntityType.loadEntityWithPassengers(nbt, world, SpawnReason.COMMAND, entity -> {
             entity.setPosition(riderPos);

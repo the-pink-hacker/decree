@@ -43,6 +43,6 @@ public abstract class ItemEntityMixin {
 
     @Unique
     private int getDespawnAge() {
-        return ((ItemEntity)(Object)this).getServer().getGameRules().getInt(DecreeGameRules.ITEM_DESPAWN_AGE);
+        return ((ItemEntity)(Object)this).getEntityWorld().getServer().getGameRules().getInt(DecreeGameRules.ITEM_DESPAWN_AGE);
     }
 }

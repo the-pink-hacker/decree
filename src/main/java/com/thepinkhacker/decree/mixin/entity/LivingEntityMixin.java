@@ -25,8 +25,8 @@ public abstract class LivingEntityMixin {
     private void decreeCanGlide(CallbackInfoReturnable<Boolean> cir) {
         LivingEntity entity = (LivingEntity)(Object)this;
 
-        if (entity.getWorld() instanceof ServerWorld world) {
-            if (entity.getWorld().getDimensionEntry().isIn(DecreeDimensionTypeTags.GLIDE_BLACKLIST)) {
+        if (entity.getEntityWorld() instanceof ServerWorld world) {
+            if (entity.getEntityWorld().getDimensionEntry().isIn(DecreeDimensionTypeTags.GLIDE_BLACKLIST)) {
                 entity.teleport(
                         world,
                         0.0d,

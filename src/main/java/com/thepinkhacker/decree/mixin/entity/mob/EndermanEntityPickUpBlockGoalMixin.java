@@ -20,7 +20,7 @@ public abstract class EndermanEntityPickUpBlockGoalMixin {
             cancellable = true
     )
     private void decreeGameruleCheck(CallbackInfoReturnable<Boolean> cir) {
-        if (this.enderman.getWorld() instanceof ServerWorld world) {
+        if (this.enderman.getEntityWorld() instanceof ServerWorld world) {
             if (!world.getGameRules().getBoolean(DecreeGameRules.DO_ENDERMAN_PICKUP)) {
                 cir.setReturnValue(false);
             }

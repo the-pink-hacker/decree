@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 public class Decree implements ModInitializer {
     public static final String MOD_ID = "decree";
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
-    private static final boolean CLIENT_REQUIRED = true;
+    private static final boolean CLIENT_REQUIRED = false;
 
     @Override
     public void onInitialize() {
