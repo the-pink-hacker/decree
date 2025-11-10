@@ -18,13 +18,16 @@ public abstract class EndermanEntityPlaceBlockGoalMixin {
 
     @Inject(
             method = "canStart()Z",
-            at = @At("RETURN"),
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/GameRules;getBoolean(Lnet/minecraft/world/GameRules$Key;)Z"
+            ),
             cancellable = true
     )
     private void decreeGameruleCheck(CallbackInfoReturnable<Boolean> cir) {
         if (this.enderman.getEntityWorld() instanceof ServerWorld world) {
             if (!world.getGameRules().getBoolean(DecreeGameRules.DO_ENDERMAN_PLACE)) {
-                cir.setReturnValue(Boolean.FALSE);
+                cir.setReturnValue(false);
             }
         }
     }

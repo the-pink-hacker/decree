@@ -16,7 +16,10 @@ public abstract class EndermanEntityPickUpBlockGoalMixin {
 
     @Inject(
             method = "canStart()Z",
-            at = @At("RETURN"),
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/GameRules;getBoolean(Lnet/minecraft/world/GameRules$Key;)Z"
+            ),
             cancellable = true
     )
     private void decreeGameruleCheck(CallbackInfoReturnable<Boolean> cir) {
