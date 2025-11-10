@@ -9,6 +9,7 @@
     "entity.LivingEntityMixin",
     "entity.mob.EndermanEntityPickUpBlockGoalMixin",
     "entity.mob.EndermanEntityPlaceBlockGoalMixin",
+    "entity.vehicle.ExperimentalMinecartControllerMixin",
     "server.world.ServerWorldMixin"
   ],
   "client": [],

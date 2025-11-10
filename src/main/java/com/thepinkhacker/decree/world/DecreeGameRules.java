@@ -1,6 +1,8 @@
 package com.thepinkhacker.decree.world;
 
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
+import net.minecraft.resource.featuretoggle.FeatureFlags;
+import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.world.GameRules;
 
 public class DecreeGameRules {
@@ -32,6 +34,18 @@ public class DecreeGameRules {
             "doMobExplosionGriefing",
             GameRules.Category.MOBS,
             GameRules.BooleanRule.create(true)
+    );
+
+    public static final GameRules.Key<GameRules.IntRule> MINECART_MAX_SPEED_EMPTY = GameRuleRegistry.register(
+            "minecartMaxSpeedEmpty",
+            GameRules.Category.MISC,
+            GameRules.IntRule.create(0, 0, 1000, FeatureSet.of(FeatureFlags.MINECART_IMPROVEMENTS), (server, value) -> {})
+    );
+
+    public static final GameRules.Key<GameRules.IntRule> MINECART_MAX_SPEED_RIDER = GameRuleRegistry.register(
+            "minecartMaxSpeedRider",
+            GameRules.Category.MISC,
+            GameRules.IntRule.create(0, 0, 1000, FeatureSet.of(FeatureFlags.MINECART_IMPROVEMENTS), (server, value) -> {})
     );
 
     // Java is weird and won't init the variables unless this runs

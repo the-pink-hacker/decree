@@ -68,6 +68,12 @@
   "gamerule.doEndermanPlace.description": "Allow Endermen to place blocks.",
   "gamerule.doMobExplosionGriefing": "Do Mob Explosions Griefing",
   "gamerule.doMobExplosionGriefing.description": "Whether mob explosions damage the world.",
+  "gamerule.doNetherPortalMobSpawn": "Do Nether Portal Mob Spawn",
+  "gamerule.doNetherPortalMobSpawn.description": "Enables zombified piglins randomly spawning from nether portals in the overworld.",
   "gamerule.itemDespawnAge": "Item Despawn Age",
-  "gamerule.itemDespawnAge.description": "Controls how long it takes for an item to despawn."
+  "gamerule.itemDespawnAge.description": "Controls how long it takes for an item to despawn.",
+  "gamerule.minecartMaxSpeedEmpty": "Max Empty Minecart Speed",
+  "gamerule.minecartMaxSpeedEmpty.description": "Override the max speed for empty minecarts.",
+  "gamerule.minecartMaxSpeedRider": "Max Rider Minecart Speed",
+  "gamerule.minecartMaxSpeedRider.description": "Override the max speed for minecarts with riders."
 }

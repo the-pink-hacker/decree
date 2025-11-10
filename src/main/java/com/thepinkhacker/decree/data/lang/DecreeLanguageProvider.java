@@ -49,6 +49,20 @@ public class DecreeLanguageProvider extends FabricLanguageProvider {
                 "Whether mob explosions damage the world."
         );
 
+        add(
+                builder,
+                DecreeGameRules.MINECART_MAX_SPEED_EMPTY,
+                "Max Empty Minecart Speed",
+                "Override the max speed for empty minecarts."
+        );
+
+        add(
+                builder,
+                DecreeGameRules.MINECART_MAX_SPEED_RIDER,
+                "Max Rider Minecart Speed",
+                "Override the max speed for minecarts with riders."
+        );
+
         add(builder, NameCommand.ENTITY_FAILED, "Failed to name entity");
         add(builder, NameCommand.ENTITY_REMOVE_FAILED, "Failed to remove entity name");
         add(builder, NameCommand.ITEM_FAILED, "Failed to name item");
