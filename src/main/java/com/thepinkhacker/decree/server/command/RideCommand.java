@@ -42,7 +42,7 @@ public class RideCommand implements CommandRegistrationCallback {
          *  - rideRules
          */
         LiteralCommandNode<ServerCommandSource> node = DecreeUtils.register(dispatcher, CommandConfigs.RIDE, command -> command
-                .requires(source -> source.hasPermissionLevel(2))
+                .requires(CommandManager.requirePermissionLevel(CommandManager.GAMEMASTERS_CHECK))
                 .then(CommandManager.argument("riders", EntityArgumentType.entities())
                         .then(CommandManager.literal("start_riding")
                                 .then(CommandManager.argument("ride", EntityArgumentType.entity())

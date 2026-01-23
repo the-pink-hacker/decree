@@ -14,21 +14,21 @@ public abstract class ExperimentalMinecartControllerMixin {
             method = "getMaxSpeed(Lnet/minecraft/server/world/ServerWorld;)D",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/GameRules;getInt(Lnet/minecraft/world/GameRules$Key;)I"
+                    target = "Lnet/minecraft/world/rule/GameRules;getValue(Lnet/minecraft/world/rule/GameRule;)Ljava/lang/Object;"
             ),
             cancellable = true
     )
-    public void decreeGetMaxSpeed(ServerWorld world, CallbackInfoReturnable<Double> cir) {
+    private void decreeGetMaxSpeed(ServerWorld world, CallbackInfoReturnable<Double> cir) {
         boolean hasRider = ((ExperimentalMinecartController)(Object)this).minecart.hasPlayerRider();
 
         if (hasRider) {
-            int speed = world.getGameRules().getInt(DecreeGameRules.MINECART_MAX_SPEED_RIDER);
+            int speed = world.getGameRules().getValue(DecreeGameRules.MINECART_MAX_SPEED_RIDER);
 
             if (speed != 0) {
                 cir.setReturnValue((double) speed);
             }
         } else {
-            int speed = world.getGameRules().getInt(DecreeGameRules.MINECART_MAX_SPEED_EMPTY);
+            int speed = world.getGameRules().getValue(DecreeGameRules.MINECART_MAX_SPEED_EMPTY);
 
             if (speed != 0) {
                 cir.setReturnValue((double) speed);

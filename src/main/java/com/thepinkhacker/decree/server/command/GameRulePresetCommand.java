@@ -21,9 +21,9 @@ public class GameRulePresetCommand implements CommandRegistrationCallback {
     @Override
     public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
         DecreeUtils.register(dispatcher, CommandConfigs.GAME_RULE_PRESET, command -> command
-                .requires(source -> source.hasPermissionLevel(2))
+                .requires(CommandManager.requirePermissionLevel(CommandManager.GAMEMASTERS_CHECK))
                 .then(CommandManager.literal("save")
-                        .requires(source -> source.hasPermissionLevel(4))
+                        .requires(CommandManager.requirePermissionLevel(CommandManager.ADMINS_CHECK))
                         .then(CommandManager.argument("preset", GameRulePresetArgumentType.preset())
                                 .executes(context -> save(
                                         context.getSource(),

@@ -13,7 +13,7 @@ public class ToggleDownfallCommand implements CommandRegistrationCallback {
     @Override
     public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
         DecreeUtils.register(dispatcher, CommandConfigs.TOGGLE_DOWNFALL, command -> command
-                .requires(source -> source.hasPermissionLevel(2))
+                .requires(CommandManager.requirePermissionLevel(CommandManager.GAMEMASTERS_CHECK))
                 .executes(context -> execute(context.getSource()))
         );
     }

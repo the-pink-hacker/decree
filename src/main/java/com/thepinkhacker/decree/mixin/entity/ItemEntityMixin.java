@@ -2,6 +2,8 @@ package com.thepinkhacker.decree.mixin.entity;
 
 import com.thepinkhacker.decree.world.DecreeGameRules;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.Constant;
@@ -14,7 +16,7 @@ public abstract class ItemEntityMixin {
             constant = @Constant(intValue = 6_000)
     )
     private int despawnAgeTick(int age) {
-        return getDespawnAge();
+        return $decree$getItemDespawnAge();
     }
 
     @ModifyConstant(
@@ -22,7 +24,7 @@ public abstract class ItemEntityMixin {
             constant = @Constant(intValue = 6_000)
     )
     private int despawnAgeCanMerge(int age) {
-        return getDespawnAge();
+        return $decree$getItemDespawnAge();
     }
 
     @ModifyConstant(
@@ -30,7 +32,7 @@ public abstract class ItemEntityMixin {
             constant = @Constant(intValue = -6_000)
     )
     private int despawnAgeConvertedItem(int age) {
-        return -getDespawnAge();
+        return -$decree$getItemDespawnAge();
     }
 
     @ModifyConstant(
@@ -38,11 +40,14 @@ public abstract class ItemEntityMixin {
             constant = @Constant(intValue = 5_999)
     )
     private int despawnAgeDespawnImmediately(int age) {
-        return getDespawnAge() - 1;
+        return $decree$getItemDespawnAge() - 1;
     }
 
     @Unique
-    private int getDespawnAge() {
-        return ((ItemEntity)(Object)this).getEntityWorld().getServer().getGameRules().getInt(DecreeGameRules.ITEM_DESPAWN_AGE);
+    private int $decree$getItemDespawnAge() {
+        World world = ((ItemEntity)(Object)this).getEntityWorld();
+        // Only called in server context
+        ServerWorld serverWorld = (ServerWorld)world;
+        return serverWorld.getGameRules().getValue(DecreeGameRules.ITEM_DESPAWN_AGE);
     }
 }

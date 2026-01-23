@@ -22,7 +22,7 @@ public class StopCommand implements CommandRegistrationCallbackDedicated {
     @Override
     public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
         DecreeUtils.register(dispatcher, CommandConfigs.STOP, command -> command
-                .requires(source -> source.hasPermissionLevel(4))
+                .requires(CommandManager.requirePermissionLevel(CommandManager.ADMINS_CHECK))
                 .then(CommandManager.literal("cancel")
                         .executes(context -> cancel())
                 )

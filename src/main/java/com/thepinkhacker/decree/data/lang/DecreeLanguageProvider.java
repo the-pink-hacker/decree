@@ -6,7 +6,7 @@ import com.thepinkhacker.decree.world.DecreeGameRules;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.world.GameRules;
+import net.minecraft.world.rule.GameRule;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -19,13 +19,13 @@ public class DecreeLanguageProvider extends FabricLanguageProvider {
     public void generateTranslations(RegistryWrapper.WrapperLookup lookup, TranslationBuilder builder) {
         add(
                 builder,
-                DecreeGameRules.DO_ENDERMAN_PICKUP,
+                DecreeGameRules.ENDERMAN_PICKUP,
                 "Do Enderman Pickup",
                 "Allow Endermen to pickup blocks."
         );
         add(
                 builder,
-                DecreeGameRules.DO_ENDERMAN_PLACE,
+                DecreeGameRules.ENDERMAN_PLACE,
                 "Do Enderman Place",
                 "Allow Endermen to place blocks."
         );
@@ -37,7 +37,7 @@ public class DecreeLanguageProvider extends FabricLanguageProvider {
         );
         add(
                 builder,
-                DecreeGameRules.DO_NETHER_PORTAL_MOB_SPAWN,
+                DecreeGameRules.NETHER_PORTAL_MOB_SPAWN,
                 "Do Nether Portal Mob Spawn",
                 "Enables zombified piglins randomly spawning from nether portals in the overworld."
         );
@@ -217,9 +217,9 @@ public class DecreeLanguageProvider extends FabricLanguageProvider {
                 .build();
     }
 
-    private static void add(
+    private static <T> void add(
             TranslationBuilder builder,
-            GameRules.Key<?> gamerule,
+            GameRule<T> gamerule,
             String title,
             String description
     ) {
@@ -227,7 +227,7 @@ public class DecreeLanguageProvider extends FabricLanguageProvider {
         builder.add(gamerule.getTranslationKey() + ".description", description);
     }
     
-    private static void add(TranslationBuilder builder, GameRules.Key<?> gamerule, String title) {
+    private static <T> void add(TranslationBuilder builder, GameRule<T> gamerule, String title) {
         builder.add(gamerule.getTranslationKey(), title);
     }
 

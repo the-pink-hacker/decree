@@ -33,7 +33,7 @@ public class NameCommand implements CommandRegistrationCallback {
             CommandManager.RegistrationEnvironment environment
     ) {
         DecreeUtils.register(dispatcher, CommandConfigs.NAME, command -> command
-                .requires(source -> source.hasPermissionLevel(2))
+                .requires(CommandManager.requirePermissionLevel(CommandManager.GAMEMASTERS_CHECK))
                 .then(CommandManager.literal("item")
                         .then(CommandManager.argument("targets", EntityArgumentType.entities())
                                 .executes(context -> removeNameItem(
@@ -134,7 +134,7 @@ public class NameCommand implements CommandRegistrationCallback {
     private static boolean nameItemTarget(Entity entity, int slot, Text name) {
         StackReference stack = entity.getStackReference(slot);
 
-        if (stack == StackReference.EMPTY) return false;
+        if (stack == null || stack.get() == ItemStack.EMPTY) return false;
 
         return nameItemTarget(stack.get(), name);
     }
@@ -199,7 +199,7 @@ public class NameCommand implements CommandRegistrationCallback {
     private static boolean removeNameItemTarget(Entity entity, int slot) {
         StackReference stack = entity.getStackReference(slot);
 
-        if (stack == StackReference.EMPTY) return false;
+        if (stack == null || stack.get() == ItemStack.EMPTY) return false;
 
         return removeNameItemTarget(stack.get());
     }

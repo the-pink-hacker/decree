@@ -21,8 +21,8 @@ public abstract class NetherPortalBlockMixin {
             ),
             cancellable = true
     )
-    private void decreePiglinCheck(BlockState state, ServerWorld world, BlockPos pos, Random random, CallbackInfo ci) {
-        if (!world.getGameRules().getBoolean(DecreeGameRules.DO_NETHER_PORTAL_MOB_SPAWN)) {
+    public void decreePiglinCheck(BlockState state, ServerWorld world, BlockPos pos, Random random, CallbackInfo ci) {
+        if (!world.getGameRules().getValue(DecreeGameRules.NETHER_PORTAL_MOB_SPAWN)) {
             ci.cancel();
         }
     }
