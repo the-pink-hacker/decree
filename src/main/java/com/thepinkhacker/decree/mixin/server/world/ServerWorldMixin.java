@@ -22,6 +22,7 @@ public abstract class ServerWorldMixin {
             method = "createExplosion(Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/damage/DamageSource;Lnet/minecraft/world/explosion/ExplosionBehavior;DDDFZLnet/minecraft/world/World$ExplosionSourceType;Lnet/minecraft/particle/ParticleEffect;Lnet/minecraft/particle/ParticleEffect;Lnet/minecraft/util/collection/Pool;Lnet/minecraft/registry/entry/RegistryEntry;)V",
             at = @At(
                     value = "INVOKE",
+                    ordinal = 1,
                     target = "Lnet/minecraft/server/world/ServerWorld;getDestructionType(Lnet/minecraft/world/rule/GameRule;)Lnet/minecraft/world/explosion/Explosion$DestructionType;"
             )
     )

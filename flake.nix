@@ -23,6 +23,7 @@
                     glfw3-minecraft
                     libglvnd
                     udev
+                    pulseaudio
                 ]);
             };
         });
