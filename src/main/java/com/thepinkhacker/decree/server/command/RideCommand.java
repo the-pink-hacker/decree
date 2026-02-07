@@ -4,7 +4,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import com.thepinkhacker.decree.command.argument.TeleportRuleArgumentType;
 import com.thepinkhacker.decree.util.command.DecreeUtils;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.CommandRegistryAccess;
@@ -46,12 +45,20 @@ public class RideCommand implements CommandRegistrationCallback {
                 .then(CommandManager.argument("riders", EntityArgumentType.entities())
                         .then(CommandManager.literal("start_riding")
                                 .then(CommandManager.argument("ride", EntityArgumentType.entity())
-                                        .then(CommandManager.argument("teleportRules", TeleportRuleArgumentType.teleportRule())
+                                        .then(CommandManager.literal("teleport_ride")
                                                 .executes(context -> startRiding(
                                                         context.getSource(),
                                                         EntityArgumentType.getEntities(context, "riders"),
                                                         EntityArgumentType.getEntity(context, "ride"),
-                                                        TeleportRuleArgumentType.getTeleportRule(context, "teleportRules")
+                                                        TeleportRule.TELEPORT_RIDE
+                                                ))
+                                        )
+                                        .then(CommandManager.literal("teleport_rider")
+                                                .executes(context -> startRiding(
+                                                        context.getSource(),
+                                                        EntityArgumentType.getEntities(context, "riders"),
+                                                        EntityArgumentType.getEntity(context, "ride"),
+                                                        TeleportRule.TELEPORT_RIDER
                                                 ))
                                         )
                                         .executes(context -> startRiding(
@@ -104,13 +111,13 @@ public class RideCommand implements CommandRegistrationCallback {
             ServerCommandSource source,
             Collection<? extends Entity> riders,
             Entity ride,
-            TeleportRuleArgumentType.TeleportRule teleportRule
+            TeleportRule teleportRule
     ) throws CommandSyntaxException {
         int i = 0;
 
         for (Entity rider : riders) {
             // Teleports ride to rider based on teleport rule
-            if (teleportRule == TeleportRuleArgumentType.TeleportRule.TELEPORT_RIDE) ride.setPosition(rider.getEntityPos());
+            if (teleportRule == TeleportRule.TELEPORT_RIDE) ride.setPosition(rider.getEntityPos());
 
             if (!rider.hasVehicle()) {
                 rider.startRiding(ride);
@@ -134,7 +141,7 @@ public class RideCommand implements CommandRegistrationCallback {
             Collection<? extends Entity> riders,
             Entity ride
     ) throws CommandSyntaxException {
-        return startRiding(source, riders, ride, TeleportRuleArgumentType.TeleportRule.TELEPORT_RIDER);
+        return startRiding(source, riders, ride, TeleportRule.TELEPORT_RIDER);
     }
 
     /**
@@ -259,5 +266,10 @@ public class RideCommand implements CommandRegistrationCallback {
         }
 
         throw SUMMON_RIDE_FAILED.create();
+    }
+
+    public enum TeleportRule {
+        TELEPORT_RIDE,
+        TELEPORT_RIDER,
     }
 }

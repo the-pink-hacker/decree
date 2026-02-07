@@ -3,7 +3,6 @@ package com.thepinkhacker.decree.server.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
-import com.thepinkhacker.decree.command.argument.GameRulePresetArgumentType;
 import com.thepinkhacker.decree.util.command.DecreeUtils;
 import com.thepinkhacker.decree.world.GameRulePreset;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -16,7 +15,7 @@ import org.apache.commons.io.FilenameUtils;
 import java.nio.file.Path;
 
 public class GameRulePresetCommand implements CommandRegistrationCallback {
-    private static final DynamicCommandExceptionType FAILED_TO_LOAD_EXCEPTION = new DynamicCommandExceptionType(preset -> Text.translatable("commands.decree.gamerulepreset.load.fail", preset));
+    private static final DynamicCommandExceptionType FAILED_TO_LOAD_EXCEPTION = new DynamicCommandExceptionType(preset -> Text.translatable("commands.decree.gamerulepreset.load.failed", preset));
 
     @Override
     public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
@@ -24,20 +23,20 @@ public class GameRulePresetCommand implements CommandRegistrationCallback {
                 .requires(CommandManager.requirePermissionLevel(CommandManager.GAMEMASTERS_CHECK))
                 .then(CommandManager.literal("save")
                         .requires(CommandManager.requirePermissionLevel(CommandManager.ADMINS_CHECK))
-                        .then(CommandManager.argument("preset", GameRulePresetArgumentType.preset())
-                                .executes(context -> save(
-                                        context.getSource(),
-                                        GameRulePresetArgumentType.getPreset(context, "preset"))
-                                )
-                        )
+//                        .then(CommandManager.argument("preset", GameRulePresetArgumentType.preset())
+//                                .executes(context -> save(
+//                                        context.getSource(),
+//                                        GameRulePresetArgumentType.getPreset(context, "preset"))
+//                                )
+//                        )
                 )
                 .then(CommandManager.literal("load")
-                        .then(CommandManager.argument("preset", GameRulePresetArgumentType.preset())
-                                .executes(context -> load(
-                                        context.getSource(),
-                                        GameRulePresetArgumentType.getPreset(context, "preset"))
-                                )
-                        )
+//                        .then(CommandManager.argument("preset", GameRulePresetArgumentType.preset())
+//                                .executes(context -> load(
+//                                        context.getSource(),
+//                                        GameRulePresetArgumentType.getPreset(context, "preset"))
+//                                )
+//                        )
                 )
         );
     }

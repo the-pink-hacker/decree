@@ -1,6 +1,7 @@
 package com.thepinkhacker.decree.data.lang;
 
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import com.thepinkhacker.decree.Decree;
 import com.thepinkhacker.decree.server.command.NameCommand;
 import com.thepinkhacker.decree.world.DecreeGameRules;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -70,12 +71,12 @@ public class DecreeLanguageProvider extends FabricLanguageProvider {
 
         GenericTranslationBuilder.of(builder)
                 .child(GenericTranslationBuilder.Node.of("commands")
-                        .child(GenericTranslationBuilder.Node.of("decree")
+                        .child(GenericTranslationBuilder.Node.of(Decree.MOD_ID)
                                 .child(GenericTranslationBuilder.Node.of("clearspawnpoint")
                                         .child("failed", "Failed to clear spawnpoint")
                                         .child("success", "Cleared spawnpoint of %s player(s)")
                                 )
-                                .child(GenericTranslationBuilder.Node.of("cpride")
+                                .child(GenericTranslationBuilder.Node.of("ride")
                                         .child(GenericTranslationBuilder.Node.of("evict_riders")
                                                 .child("failed", "Failed to evict rider(s)")
                                                 .child("success", "Evicted rider(s)")
@@ -97,7 +98,7 @@ public class DecreeLanguageProvider extends FabricLanguageProvider {
                                                 .child("success", "Summoned and mounted a %s")
                                         )
                                 )
-                                .child(GenericTranslationBuilder.Node.of("cpstop")
+                                .child(GenericTranslationBuilder.Node.of("stop")
                                         .child(GenericTranslationBuilder.Node.of("cancel")
                                                 .child("failed", "Failed to cancel server stop")
                                                 .child("success", "Canceled server stop")
