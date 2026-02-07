@@ -72,7 +72,7 @@ publishing {
 }
 
 loom {
-	accessWidenerPath = file("src/main/resources/decree.accesswidener")
+	accessWidenerPath = file("src/main/resources/decree.classtweaker")
 }
 
 fabricApi {

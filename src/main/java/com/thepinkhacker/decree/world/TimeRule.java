@@ -1,14 +1,5 @@
 package com.thepinkhacker.decree.world;
 
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.thepinkhacker.decree.Decree;
-import net.minecraft.command.argument.TimeArgumentType;
-import net.minecraft.resource.featuretoggle.FeatureSet;
-import net.minecraft.server.MinecraftServer;
-
-import java.util.function.BiConsumer;
-
 public class TimeRule /*extends GameRules.IntRule*/ {
 //    public TimeRule(GameRules.Type<GameRules.IntRule> rule, int initialValue) {
 //        super(rule, initialValue);

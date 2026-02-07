@@ -27,6 +27,8 @@
   "commands.decree.head.give.success": "Gave head to player",
   "commands.decree.head.query.name.success": "The head belongs to %s",
   "commands.decree.head.query.uuid.success": "The head's owner's UUID is %s",
+  "commands.decree.head.update.failed": "Failed to update head block",
+  "commands.decree.head.update.success": "Updated head block",
   "commands.decree.health.add.failed": "Failed to add health",
   "commands.decree.health.add.success": "Added %s health",
   "commands.decree.health.query.failed": "Failed to query health",

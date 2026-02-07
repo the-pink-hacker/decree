@@ -1,19 +1,11 @@
 package com.thepinkhacker.decree.world;
 
-import com.google.gson.*;
 import com.thepinkhacker.decree.Decree;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 // TODO: Add the ability to save and load presets from world creation
 public class GameRulePreset {

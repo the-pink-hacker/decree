@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "block.NetherPortalBlockMixin",
+    "block.entity.SkullBlockEntityMixin",
     "entity.ItemEntityMixin",
     "entity.LivingEntityMixin",
     "entity.mob.EndermanEntityPickUpBlockGoalMixin",

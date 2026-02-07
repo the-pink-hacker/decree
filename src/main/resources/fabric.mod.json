@@ -32,7 +32,7 @@
   "mixins": [
     "decree.mixins.json"
   ],
-  "accessWidener": "decree.accesswidener",
+  "accessWidener": "decree.classtweaker",
   "depends": {
     "fabricloader": ">=0.15.11",
     "fabric-api": "*",
