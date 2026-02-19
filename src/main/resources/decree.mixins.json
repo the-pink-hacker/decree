@@ -4,14 +4,14 @@
   "package": "com.thepinkhacker.decree.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "world.level.block.NetherPortalBlockMixin",
-    "world.level.block.entity.SkullBlockEntityMixin",
-    "world.entity.item.ItemEntityMixin",
+    "server.level.ServerLevelMixin",
     "world.entity.LivingEntityMixin",
-    "world.entity.monster.EndermanTakeBlockGoalMixin",
+    "world.entity.item.ItemEntityMixin",
     "world.entity.monster.EndermanLeaveBlockGoalMixin",
+    "world.entity.monster.EndermanTakeBlockGoalMixin",
     "world.entity.vehicle.NewMinecartBehaviorMixin",
-    "server.level.ServerLevelMixin"
+    "world.level.block.NetherPortalBlockMixin",
+    "world.level.block.entity.SkullBlockEntityMixin"
   ],
   "client": [],
   "injectors": {

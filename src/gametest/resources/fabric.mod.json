@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "id": "decree-test",
+  "version": "1.0.0",
+  "name": "Decree",
+  "icon": "assets/decree/icons/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": [
+      "com.thepinkhacker.decree.gametest.ToggleDownfallCommandTest"
+    ]
+  }
+}

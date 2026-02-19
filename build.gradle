@@ -22,6 +22,17 @@ dependencies {
 
 	// Fabric API
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+	// Game Tests
+	productionRuntimeMods "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+}
+
+tasks.register("runProductionClientGameTest", net.fabricmc.loom.task.prod.ClientProductionRunTask) {
+	jvmArgs.add("-Dfabric.client.gametest")
+	// Whether to use XVFB to run the game, using a virtual framebuffer. This is useful for headless CI environments.
+	// Defaults to true only on Linux and when the "CI" environment variable is set.
+	// XVFB must be installed, on Debian-based systems you can install it with: `apt install xvfb`
+	useXVFB = true
 }
 
 processResources {
@@ -78,5 +89,13 @@ loom {
 fabricApi {
 	configureDataGeneration() {
 		client = true
+	}
+
+	configureTests {
+		createSourceSet = true
+		modId = "decree-gametest-${project.name}"
+		enableGameTests = true // Default is true
+		enableClientGameTests = true // Default is true
+		eula = true // By setting this to true, you agree to the Minecraft EULA.
 	}
 }
