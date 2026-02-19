@@ -2,13 +2,13 @@ package com.thepinkhacker.decree.world;
 
 import com.thepinkhacker.decree.Decree;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleBuilder;
-import net.minecraft.resource.featuretoggle.FeatureFlags;
-import net.minecraft.resource.featuretoggle.FeatureSet;
-import net.minecraft.world.rule.GameRule;
-import net.minecraft.world.rule.GameRuleCategory;
+import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.level.gamerules.GameRule;
+import net.minecraft.world.level.gamerules.GameRuleCategory;
 
 public class DecreeGameRules {
-    private static final FeatureSet MINECART_IMPROVEMENTS = FeatureSet.of(FeatureFlags.MINECART_IMPROVEMENTS);
+    private static final FeatureFlagSet MINECART_IMPROVEMENTS = FeatureFlagSet.of(FeatureFlags.MINECART_IMPROVEMENTS);
 
     public static final GameRule<Integer> ITEM_DESPAWN_AGE = GameRuleBuilder
             .forInteger(6_000)

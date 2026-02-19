@@ -6,97 +6,97 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.thepinkhacker.decree.util.command.DecreeUtils;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.command.argument.RegistryEntryReferenceArgumentType;
-import net.minecraft.command.suggestion.SuggestionProviders;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.ResourceArgument;
+import net.minecraft.commands.synchronization.SuggestionProviders;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Collection;
 
 public class RideCommand implements CommandRegistrationCallback {
-    private static final SimpleCommandExceptionType START_RIDING_FAILED = new SimpleCommandExceptionType(Text.translatable("commands.decree.ride.start_riding.failed"));
-    private static final SimpleCommandExceptionType STOP_RIDING_FAILED = new SimpleCommandExceptionType(Text.translatable("commands.decree.ride.stop_riding.failed"));
-    private static final SimpleCommandExceptionType EVICT_RIDERS_FAILED = new SimpleCommandExceptionType(Text.translatable("commands.decree.ride.evict_riders.failed"));
-    private static final SimpleCommandExceptionType SUMMON_RIDER_FAILED = new SimpleCommandExceptionType(Text.translatable("commands.decree.ride.summon_rider.failed"));
-    private static final SimpleCommandExceptionType SUMMON_RIDE_FAILED = new SimpleCommandExceptionType(Text.translatable("commands.decree.ride.summon_ride.failed"));
-    private static final SimpleCommandExceptionType FAILED_UUID_EXCEPTION = new SimpleCommandExceptionType(Text.translatable("commands.decree.summon.failed.uuid"));
+    private static final SimpleCommandExceptionType START_RIDING_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.decree.ride.start_riding.failed"));
+    private static final SimpleCommandExceptionType STOP_RIDING_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.decree.ride.stop_riding.failed"));
+    private static final SimpleCommandExceptionType EVICT_RIDERS_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.decree.ride.evict_riders.failed"));
+    private static final SimpleCommandExceptionType SUMMON_RIDER_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.decree.ride.summon_rider.failed"));
+    private static final SimpleCommandExceptionType SUMMON_RIDE_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.decree.ride.summon_ride.failed"));
+    private static final SimpleCommandExceptionType FAILED_UUID_EXCEPTION = new SimpleCommandExceptionType(Component.translatable("commands.decree.summon.failed.uuid"));
 
     @Override
-    public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment) {
         /*
          * Todo: Add optional fields from bedrock edition
          *  - nameTag
          *  - rideRules
          */
-        LiteralCommandNode<ServerCommandSource> node = DecreeUtils.register(dispatcher, CommandConfigs.RIDE, command -> command
-                .requires(CommandManager.requirePermissionLevel(CommandManager.GAMEMASTERS_CHECK))
-                .then(CommandManager.argument("riders", EntityArgumentType.entities())
-                        .then(CommandManager.literal("start_riding")
-                                .then(CommandManager.argument("ride", EntityArgumentType.entity())
-                                        .then(CommandManager.literal("teleport_ride")
+        LiteralCommandNode<CommandSourceStack> node = DecreeUtils.register(dispatcher, CommandConfigs.RIDE, command -> command
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .then(Commands.argument("riders", EntityArgument.entities())
+                        .then(Commands.literal("start_riding")
+                                .then(Commands.argument("ride", EntityArgument.entity())
+                                        .then(Commands.literal("teleport_ride")
                                                 .executes(context -> startRiding(
                                                         context.getSource(),
-                                                        EntityArgumentType.getEntities(context, "riders"),
-                                                        EntityArgumentType.getEntity(context, "ride"),
+                                                        EntityArgument.getEntities(context, "riders"),
+                                                        EntityArgument.getEntity(context, "ride"),
                                                         TeleportRule.TELEPORT_RIDE
                                                 ))
                                         )
-                                        .then(CommandManager.literal("teleport_rider")
+                                        .then(Commands.literal("teleport_rider")
                                                 .executes(context -> startRiding(
                                                         context.getSource(),
-                                                        EntityArgumentType.getEntities(context, "riders"),
-                                                        EntityArgumentType.getEntity(context, "ride"),
+                                                        EntityArgument.getEntities(context, "riders"),
+                                                        EntityArgument.getEntity(context, "ride"),
                                                         TeleportRule.TELEPORT_RIDER
                                                 ))
                                         )
                                         .executes(context -> startRiding(
                                                 context.getSource(),
-                                                EntityArgumentType.getEntities(context, "riders"),
-                                                EntityArgumentType.getEntity(context, "ride")
+                                                EntityArgument.getEntities(context, "riders"),
+                                                EntityArgument.getEntity(context, "ride")
                                         ))
                                 )
                         )
-                        .then(CommandManager.literal("stop_riding")
+                        .then(Commands.literal("stop_riding")
                                 .executes(context -> stopRiding(
                                         context.getSource(),
-                                        EntityArgumentType.getEntities(context, "riders")
+                                        EntityArgument.getEntities(context, "riders")
                                 ))
                         )
-                        .then(CommandManager.literal("evict_riders")
+                        .then(Commands.literal("evict_riders")
                                 .executes(context -> evictRiders(
                                         context.getSource(),
-                                        EntityArgumentType.getEntities(context, "riders")
+                                        EntityArgument.getEntities(context, "riders")
                                 ))
                         )
-                        .then(CommandManager.literal("summon_rider")
-                                .then(CommandManager.argument("entity", RegistryEntryReferenceArgumentType.registryEntry(registryAccess, RegistryKeys.ENTITY_TYPE))
+                        .then(Commands.literal("summon_rider")
+                                .then(Commands.argument("entity", ResourceArgument.resource(registryAccess, Registries.ENTITY_TYPE))
                                         .suggests(SuggestionProviders.cast(SuggestionProviders.SUMMONABLE_ENTITIES))
                                         .executes(context -> summonRider(
                                                 context.getSource(),
-                                                EntityArgumentType.getEntity(context, "riders"),
-                                                RegistryEntryReferenceArgumentType.getSummonableEntityType(context, "entity")
+                                                EntityArgument.getEntity(context, "riders"),
+                                                ResourceArgument.getSummonableEntityType(context, "entity")
                                         ))
                                 )
                         )
-                        .then(CommandManager.literal("summon_ride")
-                                .then(CommandManager.argument("entity", RegistryEntryReferenceArgumentType.registryEntry(registryAccess, RegistryKeys.ENTITY_TYPE))
+                        .then(Commands.literal("summon_ride")
+                                .then(Commands.argument("entity", ResourceArgument.resource(registryAccess, Registries.ENTITY_TYPE))
                                         .suggests(SuggestionProviders.cast(SuggestionProviders.SUMMONABLE_ENTITIES))
                                         .executes(context -> summonRide(
                                                 context.getSource(),
-                                                EntityArgumentType.getEntity(context, "riders"),
-                                                RegistryEntryReferenceArgumentType.getSummonableEntityType(context, "entity")
+                                                EntityArgument.getEntity(context, "riders"),
+                                                ResourceArgument.getSummonableEntityType(context, "entity")
                                         ))
                                 )
                         )
@@ -108,7 +108,7 @@ public class RideCommand implements CommandRegistrationCallback {
      * Makes "riders" ride on "ride"
      */
     private static int startRiding(
-            ServerCommandSource source,
+            CommandSourceStack source,
             Collection<? extends Entity> riders,
             Entity ride,
             TeleportRule teleportRule
@@ -117,9 +117,9 @@ public class RideCommand implements CommandRegistrationCallback {
 
         for (Entity rider : riders) {
             // Teleports ride to rider based on teleport rule
-            if (teleportRule == TeleportRule.TELEPORT_RIDE) ride.setPosition(rider.getEntityPos());
+            if (teleportRule == TeleportRule.TELEPORT_RIDE) ride.setPos(rider.position());
 
-            if (!rider.hasVehicle()) {
+            if (!rider.isPassenger()) {
                 rider.startRiding(ride);
                 i++;
             }
@@ -128,7 +128,7 @@ public class RideCommand implements CommandRegistrationCallback {
         }
 
         if (i > 0) {
-            source.sendFeedback(() -> Text.translatable("commands.decree.ride.start_riding.success"), false);
+            source.sendSuccess(() -> Component.translatable("commands.decree.ride.start_riding.success"), false);
         } else {
             throw START_RIDING_FAILED.create();
         }
@@ -137,7 +137,7 @@ public class RideCommand implements CommandRegistrationCallback {
     }
 
     private static int startRiding(
-            ServerCommandSource source,
+            CommandSourceStack source,
             Collection<? extends Entity> riders,
             Entity ride
     ) throws CommandSyntaxException {
@@ -148,20 +148,20 @@ public class RideCommand implements CommandRegistrationCallback {
      * Makes "targets" dismount their vehicle
      */
     private static int stopRiding(
-            ServerCommandSource source,
+            CommandSourceStack source,
             Collection<? extends Entity> targets
     ) throws CommandSyntaxException {
         int i = 0;
 
         for (Entity rider : targets) {
-            if (rider.hasVehicle()) {
-                rider.dismountVehicle();
+            if (rider.isPassenger()) {
+                rider.removeVehicle();
                 i++;
             }
         }
 
         if (i > 0) {
-            source.sendFeedback(() -> Text.translatable("commands.decree.ride.stop_riding.success"), false);
+            source.sendSuccess(() -> Component.translatable("commands.decree.ride.stop_riding.success"), false);
         } else {
             throw STOP_RIDING_FAILED.create();
         }
@@ -173,18 +173,18 @@ public class RideCommand implements CommandRegistrationCallback {
      * Makes entities that are rinding on "targets" dismount
      */
     private static int evictRiders(
-            ServerCommandSource source,
+            CommandSourceStack source,
             Collection<? extends Entity> targets
     ) throws CommandSyntaxException {
         int i = 0;
 
         for (Entity rider : targets) {
-            rider.removeAllPassengers();
+            rider.ejectPassengers();
             i++;
         }
 
         if (i > 0) {
-            source.sendFeedback(() -> Text.translatable("commands.decree.ride.evict_riders.success"), false);
+            source.sendSuccess(() -> Component.translatable("commands.decree.ride.evict_riders.success"), false);
         } else {
             throw EVICT_RIDERS_FAILED.create();
         }
@@ -196,31 +196,31 @@ public class RideCommand implements CommandRegistrationCallback {
      * Summon an entity that will ride on "ride"
      */
     private static int summonRider(
-            ServerCommandSource source,
+            CommandSourceStack source,
             Entity ride,
-            RegistryEntry.Reference<EntityType<?>> entityType
+            Holder.Reference<EntityType<?>> entityType
     ) throws CommandSyntaxException {
-        if (!ride.hasPassengers()) {
-            NbtCompound nbt = new NbtCompound();
-            nbt.putString("id", entityType.registryKey().getValue().toString());
+        if (!ride.isVehicle()) {
+            CompoundTag nbt = new CompoundTag();
+            nbt.putString("id", entityType.key().identifier().toString());
 
-            ServerWorld world = source.getWorld();
+            ServerLevel world = source.getLevel();
 
-            Vec3d ridePos = ride.getEntityPos();
+            Vec3 ridePos = ride.position();
 
-            Entity rider = EntityType.loadEntityWithPassengers(nbt, world, SpawnReason.COMMAND, entity -> {
-                entity.setPosition(ridePos);
+            Entity rider = EntityType.loadEntityRecursive(nbt, world, EntitySpawnReason.COMMAND, entity -> {
+                entity.setPos(ridePos);
                 return entity;
             });
 
             if (rider != null) {
-                if (rider instanceof MobEntity mobEntity) {
-                    mobEntity.initialize(world, world.getLocalDifficulty(mobEntity.getBlockPos()), SpawnReason.COMMAND, null);
+                if (rider instanceof Mob mobEntity) {
+                    mobEntity.finalizeSpawn(world, world.getCurrentDifficultyAt(mobEntity.blockPosition()), EntitySpawnReason.COMMAND, null);
                 }
 
-                if (world.spawnNewEntityAndPassengers(rider)) {
+                if (world.tryAddFreshEntityWithPassengers(rider)) {
                     rider.startRiding(ride);
-                    source.sendFeedback(() -> Text.translatable("commands.decree.ride.summon_rider.success", rider.getDisplayName()), true);
+                    source.sendSuccess(() -> Component.translatable("commands.decree.ride.summon_rider.success", rider.getDisplayName()), true);
                     return 1;
                 } else {
                     throw FAILED_UUID_EXCEPTION.create();
@@ -235,30 +235,30 @@ public class RideCommand implements CommandRegistrationCallback {
      * Summon an entity that "rider" will ride
      */
     private static int summonRide(
-            ServerCommandSource source,
+            CommandSourceStack source,
             Entity rider,
-            RegistryEntry.Reference<EntityType<?>> entityType
+            Holder.Reference<EntityType<?>> entityType
     ) throws CommandSyntaxException {
-        NbtCompound nbt = new NbtCompound();
-        nbt.putString("id", entityType.registryKey().getValue().toString());
+        CompoundTag nbt = new CompoundTag();
+        nbt.putString("id", entityType.key().identifier().toString());
 
-        ServerWorld world = source.getWorld();
+        ServerLevel world = source.getLevel();
 
-        Vec3d riderPos = rider.getEntityPos();
+        Vec3 riderPos = rider.position();
 
-        Entity ride = EntityType.loadEntityWithPassengers(nbt, world, SpawnReason.COMMAND, entity -> {
-            entity.setPosition(riderPos);
+        Entity ride = EntityType.loadEntityRecursive(nbt, world, EntitySpawnReason.COMMAND, entity -> {
+            entity.setPos(riderPos);
             return entity;
         });
 
         if (ride != null) {
-            if (ride instanceof MobEntity mobEntity) {
-                mobEntity.initialize(world, world.getLocalDifficulty(mobEntity.getBlockPos()), SpawnReason.COMMAND, null);
+            if (ride instanceof Mob mobEntity) {
+                mobEntity.finalizeSpawn(world, world.getCurrentDifficultyAt(mobEntity.blockPosition()), EntitySpawnReason.COMMAND, null);
             }
 
-            if (world.spawnNewEntityAndPassengers(ride)) {
+            if (world.tryAddFreshEntityWithPassengers(ride)) {
                 rider.startRiding(ride);
-                source.sendFeedback(() -> Text.translatable("commands.decree.ride.summon_ride.success", ride.getDisplayName()), true);
+                source.sendSuccess(() -> Component.translatable("commands.decree.ride.summon_ride.success", ride.getDisplayName()), true);
                 return 1;
             } else {
                 throw FAILED_UUID_EXCEPTION.create();

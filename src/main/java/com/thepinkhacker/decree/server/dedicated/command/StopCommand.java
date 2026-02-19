@@ -6,27 +6,27 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.thepinkhacker.decree.server.command.CommandConfigs;
 import com.thepinkhacker.decree.util.command.DecreeUtils;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.network.message.MessageType;
-import net.minecraft.network.message.SignedMessage;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.PlayerManager;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
+import net.minecraft.server.players.PlayerList;
 
 public class StopCommand implements CommandRegistrationCallbackDedicated {
     private static volatile int timeLeft;
-    private static final SimpleCommandExceptionType FAILED_CANCEL = new SimpleCommandExceptionType(Text.translatable("commands.decree.stop.cancel.failed"));
+    private static final SimpleCommandExceptionType FAILED_CANCEL = new SimpleCommandExceptionType(Component.translatable("commands.decree.stop.cancel.failed"));
 
     @Override
-    public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment) {
         DecreeUtils.register(dispatcher, CommandConfigs.STOP, command -> command
-                .requires(CommandManager.requirePermissionLevel(CommandManager.ADMINS_CHECK))
-                .then(CommandManager.literal("cancel")
+                .requires(Commands.hasPermission(Commands.LEVEL_ADMINS))
+                .then(Commands.literal("cancel")
                         .executes(context -> cancel())
                 )
-                .then(CommandManager.argument("time", IntegerArgumentType.integer(0))
+                .then(Commands.argument("time", IntegerArgumentType.integer(0))
                         .executes(context -> stopServer(
                                 context.getSource(),
                                 IntegerArgumentType.getInteger(context, "time")
@@ -39,24 +39,24 @@ public class StopCommand implements CommandRegistrationCallbackDedicated {
         );
     }
 
-    private static int stopServer(ServerCommandSource source, int seconds) {
+    private static int stopServer(CommandSourceStack source, int seconds) {
         final MinecraftServer server = source.getServer();
 
         if (seconds > 0) {
             Thread thread = new Thread(() -> {
-                final PlayerManager playerManager = server.getPlayerManager();
+                final PlayerList playerManager = server.getPlayerList();
                 timeLeft = seconds;
 
                 for (int i = 0; i < seconds; i++) {
                     // Cancel
                     if (timeLeft == -1) {
-                        sendServerMessage(playerManager, source, Text.translatable("commands.decree.stop.cancel.success"));
+                        sendServerMessage(playerManager, source, Component.translatable("commands.decree.stop.cancel.success"));
                         return;
                     }
 
                     timeLeft = seconds - i;
 
-                    if (timeLeft <= 10 || timeLeft % 10 == 0) sendServerMessage(playerManager, source, Text.translatable("commands.decree.stop.time", timeLeft));
+                    if (timeLeft <= 10 || timeLeft % 10 == 0) sendServerMessage(playerManager, source, Component.translatable("commands.decree.stop.time", timeLeft));
 
                     try {
                         Thread.sleep(1000L);
@@ -65,14 +65,14 @@ public class StopCommand implements CommandRegistrationCallbackDedicated {
                     }
                 }
 
-                sendServerMessage(playerManager, source, Text.translatable("commands.decree.stop.stop", seconds));
-                server.stop(false);
+                sendServerMessage(playerManager, source, Component.translatable("commands.decree.stop.stop", seconds));
+                server.halt(false);
             }, "Server stop thread");
 
             thread.start();
         } else {
-            source.sendFeedback(() -> Text.translatable("commands.decree.stop.immediate"), true);
-            server.stop(false);
+            source.sendSuccess(() -> Component.translatable("commands.decree.stop.immediate"), true);
+            server.halt(false);
         }
 
         return 1;
@@ -87,8 +87,8 @@ public class StopCommand implements CommandRegistrationCallbackDedicated {
         throw FAILED_CANCEL.create();
     }
 
-    private static void sendServerMessage(PlayerManager playerManager, ServerCommandSource source, Text text) {
+    private static void sendServerMessage(PlayerList playerManager, CommandSourceStack source, Component text) {
         // Todo: Make secure
-        playerManager.broadcast(SignedMessage.ofUnsigned(text.toString()), source, MessageType.params(MessageType.CHAT, source));
+        playerManager.broadcastChatMessage(PlayerChatMessage.system(text.toString()), source, ChatType.bind(ChatType.CHAT, source));
     }
 }

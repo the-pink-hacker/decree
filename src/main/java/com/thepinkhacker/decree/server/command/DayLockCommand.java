@@ -4,18 +4,18 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.thepinkhacker.decree.util.command.DecreeUtils;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-import net.minecraft.world.rule.GameRules;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.gamerules.GameRules;
 
 public class DayLockCommand implements CommandRegistrationCallback {
     @Override
-    public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment) {
         DecreeUtils.register(dispatcher, CommandConfigs.DAY_LOCK, command -> command
-                .requires(CommandManager.requirePermissionLevel(CommandManager.GAMEMASTERS_CHECK))
-                .then(CommandManager.argument("lock", BoolArgumentType.bool())
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .then(Commands.argument("lock", BoolArgumentType.bool())
                         .executes(context -> execute(
                                 context.getSource(),
                                 BoolArgumentType.getBool(context, "lock")
@@ -28,19 +28,19 @@ public class DayLockCommand implements CommandRegistrationCallback {
         );
     }
 
-    private static int execute(ServerCommandSource source, boolean dayLock) {
-        GameRules rules = source.getWorld().getGameRules();
-        rules.setValue(GameRules.ADVANCE_TIME, !dayLock, source.getServer());
+    private static int execute(CommandSourceStack source, boolean dayLock) {
+        GameRules rules = source.getLevel().getGameRules();
+        rules.set(GameRules.ADVANCE_TIME, !dayLock, source.getServer());
 
         // Set noon
         // Bedrock sets the game to 5,000 ticks, but this makes more sense
         // Bedrock is weird
-        if (dayLock) source.getWorld().setTimeOfDay(6_000);
+        if (dayLock) source.getLevel().setDayTime(6_000);
 
         String key = dayLock ? "commands.decree.daylock.enabled" : "commands.decree.daylock.disabled";
-        source.sendFeedback(() -> Text.translatable(key), true);
+        source.sendSuccess(() -> Component.translatable(key), true);
 
         // Return 1 only if the value changes
-        return rules.getValue(GameRules.ADVANCE_TIME) == dayLock ? 1 : 0;
+        return rules.get(GameRules.ADVANCE_TIME) == dayLock ? 1 : 0;
     }
 }

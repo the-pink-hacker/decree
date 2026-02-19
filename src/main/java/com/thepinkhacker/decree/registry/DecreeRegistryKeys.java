@@ -2,13 +2,13 @@ package com.thepinkhacker.decree.registry;
 
 import com.thepinkhacker.decree.Decree;
 import com.thepinkhacker.decree.data.command.CommandConfig;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 
 public class DecreeRegistryKeys {
-    public static final RegistryKey<Registry<CommandConfig>> COMMAND_CONFIG = of("command_config");
+    public static final ResourceKey<Registry<CommandConfig>> COMMAND_CONFIG = of("command_config");
 
-    private static <T> RegistryKey<Registry<T>> of(String id) {
-        return RegistryKey.ofRegistry(Decree.id(id));
+    private static <T> ResourceKey<Registry<T>> of(String id) {
+        return ResourceKey.createRegistryKey(Decree.id(id));
     }
 }

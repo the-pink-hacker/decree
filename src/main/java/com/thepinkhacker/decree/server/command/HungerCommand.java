@@ -8,13 +8,13 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.thepinkhacker.decree.util.command.DecreeUtils;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.entity.player.HungerManager;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.food.FoodData;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,169 +22,169 @@ import java.util.Objects;
 
 public class HungerCommand implements CommandRegistrationCallback {
     @Override
-    public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
-        LiteralCommandNode<ServerCommandSource> node = DecreeUtils.register(dispatcher, CommandConfigs.HUNGER, command -> command
-                .requires(CommandManager.requirePermissionLevel(CommandManager.GAMEMASTERS_CHECK))
-                .then(CommandManager.literal("set")
-                        .then(CommandManager.literal("food")
-                                .then(CommandManager.argument("food", IntegerArgumentType.integer(0))
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment) {
+        LiteralCommandNode<CommandSourceStack> node = DecreeUtils.register(dispatcher, CommandConfigs.HUNGER, command -> command
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .then(Commands.literal("set")
+                        .then(Commands.literal("food")
+                                .then(Commands.argument("food", IntegerArgumentType.integer(0))
                                         .executes(context -> setFood(
                                                 context.getSource(),
                                                 IntegerArgumentType.getInteger(context, "food"))
                                         )
                                 )
-                                .then(CommandManager.argument("targets", EntityArgumentType.players())
-                                        .then(CommandManager.argument("food", IntegerArgumentType.integer(0))
+                                .then(Commands.argument("targets", EntityArgument.players())
+                                        .then(Commands.argument("food", IntegerArgumentType.integer(0))
                                                 .executes(context -> setFood(
                                                         context.getSource(),
-                                                        EntityArgumentType.getPlayers(context, "targets"),
+                                                        EntityArgument.getPlayers(context, "targets"),
                                                         IntegerArgumentType.getInteger(context, "food"))
                                                 )
                                         )
                                 )
                         )
-                        .then(CommandManager.literal("exhaustion")
-                                .then(CommandManager.argument("exhaustion", FloatArgumentType.floatArg(0.0f))
+                        .then(Commands.literal("exhaustion")
+                                .then(Commands.argument("exhaustion", FloatArgumentType.floatArg(0.0f))
                                         .executes(context -> setExhaustion(
                                                 context.getSource(),
                                                 FloatArgumentType.getFloat(context, "exhaustion"))
                                         )
                                 )
-                                .then(CommandManager.argument("targets", EntityArgumentType.players())
-                                        .then(CommandManager.argument("exhaustion", FloatArgumentType.floatArg(0.0f, 40.0f))
+                                .then(Commands.argument("targets", EntityArgument.players())
+                                        .then(Commands.argument("exhaustion", FloatArgumentType.floatArg(0.0f, 40.0f))
                                                 .executes(context -> setExhaustion(
                                                         context.getSource(),
-                                                        EntityArgumentType.getPlayers(context, "targets"),
+                                                        EntityArgument.getPlayers(context, "targets"),
                                                         FloatArgumentType.getFloat(context, "exhaustion"))
                                                 )
                                         )
                                 )
                         )
-                        .then(CommandManager.literal("saturation")
-                                .then(CommandManager.argument("saturation", FloatArgumentType.floatArg(0.0f))
+                        .then(Commands.literal("saturation")
+                                .then(Commands.argument("saturation", FloatArgumentType.floatArg(0.0f))
                                         .executes(context -> setSaturation(
                                                 context.getSource(),
                                                 FloatArgumentType.getFloat(context, "saturation"))
                                         )
                                 )
-                                .then(CommandManager.argument("targets", EntityArgumentType.players())
-                                        .then(CommandManager.argument("saturation", FloatArgumentType.floatArg(0.0f))
+                                .then(Commands.argument("targets", EntityArgument.players())
+                                        .then(Commands.argument("saturation", FloatArgumentType.floatArg(0.0f))
                                                 .executes(context -> setSaturation(
                                                         context.getSource(),
-                                                        EntityArgumentType.getPlayers(context, "targets"),
+                                                        EntityArgument.getPlayers(context, "targets"),
                                                         FloatArgumentType.getFloat(context, "saturation"))
                                                 )
                                         )
                                 )
                         )
-                        .then(CommandManager.argument("food", IntegerArgumentType.integer(0))
+                        .then(Commands.argument("food", IntegerArgumentType.integer(0))
                                 .executes(context -> setFood(
                                         context.getSource(),
                                         IntegerArgumentType.getInteger(context, "food"))
                                 )
                         )
-                        .then(CommandManager.argument("targets", EntityArgumentType.players())
-                                .then(CommandManager.argument("food", IntegerArgumentType.integer(0))
+                        .then(Commands.argument("targets", EntityArgument.players())
+                                .then(Commands.argument("food", IntegerArgumentType.integer(0))
                                         .executes(context -> setFood(
                                                 context.getSource(),
-                                                EntityArgumentType.getPlayers(context, "targets"),
+                                                EntityArgument.getPlayers(context, "targets"),
                                                 IntegerArgumentType.getInteger(context, "food"))
                                         )
                                 )
                         )
                 )
-                .then(CommandManager.literal("add")
-                        .then(CommandManager.literal("food")
-                                .then(CommandManager.argument("food", IntegerArgumentType.integer())
+                .then(Commands.literal("add")
+                        .then(Commands.literal("food")
+                                .then(Commands.argument("food", IntegerArgumentType.integer())
                                         .executes(context -> addFood(
                                                 context.getSource(),
                                                 IntegerArgumentType.getInteger(context, "food"))
                                         )
                                 )
-                                .then(CommandManager.argument("targets", EntityArgumentType.players())
-                                        .then(CommandManager.argument("food", IntegerArgumentType.integer())
+                                .then(Commands.argument("targets", EntityArgument.players())
+                                        .then(Commands.argument("food", IntegerArgumentType.integer())
                                                 .executes(context -> addFood(
                                                         context.getSource(),
-                                                        EntityArgumentType.getPlayers(context, "targets"),
+                                                        EntityArgument.getPlayers(context, "targets"),
                                                         IntegerArgumentType.getInteger(context, "food"))
                                                 )
                                         )
                                 )
                         )
-                        .then(CommandManager.literal("exhaustion")
-                                .then(CommandManager.argument("exhaustion", FloatArgumentType.floatArg())
+                        .then(Commands.literal("exhaustion")
+                                .then(Commands.argument("exhaustion", FloatArgumentType.floatArg())
                                         .executes(context -> setExhaustion(
                                                 context.getSource(),
                                                 FloatArgumentType.getFloat(context, "exhaustion"))
                                         )
                                 )
-                                .then(CommandManager.argument("targets", EntityArgumentType.players())
-                                        .then(CommandManager.argument("exhaustion", FloatArgumentType.floatArg())
+                                .then(Commands.argument("targets", EntityArgument.players())
+                                        .then(Commands.argument("exhaustion", FloatArgumentType.floatArg())
                                                 .executes(context -> setExhaustion(
                                                         context.getSource(),
-                                                        EntityArgumentType.getPlayers(context, "targets"),
+                                                        EntityArgument.getPlayers(context, "targets"),
                                                         FloatArgumentType.getFloat(context, "exhaustion"))
                                                 )
                                         )
                                 )
                         )
-                        .then(CommandManager.literal("saturation")
-                                .then(CommandManager.argument("saturation", FloatArgumentType.floatArg())
+                        .then(Commands.literal("saturation")
+                                .then(Commands.argument("saturation", FloatArgumentType.floatArg())
                                         .executes(context -> setSaturation(
                                                 context.getSource(),
                                                 FloatArgumentType.getFloat(context, "saturation"))
                                         )
                                 )
-                                .then(CommandManager.argument("targets", EntityArgumentType.players())
-                                        .then(CommandManager.argument("saturation", FloatArgumentType.floatArg())
+                                .then(Commands.argument("targets", EntityArgument.players())
+                                        .then(Commands.argument("saturation", FloatArgumentType.floatArg())
                                                 .executes(context -> setSaturation(
                                                         context.getSource(),
-                                                        EntityArgumentType.getPlayers(context, "targets"),
+                                                        EntityArgument.getPlayers(context, "targets"),
                                                         FloatArgumentType.getFloat(context, "saturation"))
                                                 )
                                         )
                                 )
                         )
-                        .then(CommandManager.argument("food", IntegerArgumentType.integer())
+                        .then(Commands.argument("food", IntegerArgumentType.integer())
                                 .executes(context -> addFood(
                                         context.getSource(),
                                         IntegerArgumentType.getInteger(context, "food"))
                                 )
                         )
-                        .then(CommandManager.argument("targets", EntityArgumentType.players())
-                                .then(CommandManager.argument("food", IntegerArgumentType.integer())
+                        .then(Commands.argument("targets", EntityArgument.players())
+                                .then(Commands.argument("food", IntegerArgumentType.integer())
                                         .executes(context -> addFood(
                                                 context.getSource(),
-                                                EntityArgumentType.getPlayers(context, "targets"),
+                                                EntityArgument.getPlayers(context, "targets"),
                                                 IntegerArgumentType.getInteger(context, "food"))
                                         )
                                 )
                         )
                 )
-                .then(CommandManager.literal("query")
-                        .then(CommandManager.literal("food")
-                                .then(CommandManager.argument("target", EntityArgumentType.player())
+                .then(Commands.literal("query")
+                        .then(Commands.literal("food")
+                                .then(Commands.argument("target", EntityArgument.player())
                                         .executes(context -> queryFood(
                                                 context.getSource(),
-                                                EntityArgumentType.getPlayer(context, "target"))
+                                                EntityArgument.getPlayer(context, "target"))
                                         )
                                 )
                                 .executes(context -> queryFood(context.getSource()))
                         )
-                        .then(CommandManager.literal("exhaustion")
-                                .then(CommandManager.argument("target", EntityArgumentType.player())
+                        .then(Commands.literal("exhaustion")
+                                .then(Commands.argument("target", EntityArgument.player())
                                         .executes(context -> queryExhaustion(
                                                 context.getSource(),
-                                                EntityArgumentType.getPlayer(context, "target"))
+                                                EntityArgument.getPlayer(context, "target"))
                                         )
                                 )
                                 .executes(context -> queryExhaustion(context.getSource()))
                         )
-                        .then(CommandManager.literal("saturation")
-                                .then(CommandManager.argument("target", EntityArgumentType.player())
+                        .then(Commands.literal("saturation")
+                                .then(Commands.argument("target", EntityArgument.player())
                                         .executes(context -> querySaturation(
                                                 context.getSource(),
-                                                EntityArgumentType.getPlayer(context, "target"))
+                                                EntityArgument.getPlayer(context, "target"))
                                         )
                                 )
                                 .executes(context -> querySaturation(context.getSource()))
@@ -194,180 +194,180 @@ public class HungerCommand implements CommandRegistrationCallback {
         );
     }
 
-    private static int setFood(ServerCommandSource source, Collection<ServerPlayerEntity> players, int food) throws CommandSyntaxException {
+    private static int setFood(CommandSourceStack source, Collection<ServerPlayer> players, int food) throws CommandSyntaxException {
         int i = 0;
 
-        for (ServerPlayerEntity player : players) {
-            player.getHungerManager().setFoodLevel(food);
+        for (ServerPlayer player : players) {
+            player.getFoodData().setFoodLevel(food);
             i++;
         }
 
         if (i > 0) {
-            source.sendFeedback(() -> Text.translatable("commands.decree.hunger.set.food.success", food), false);
+            source.sendSuccess(() -> Component.translatable("commands.decree.hunger.set.food.success", food), false);
         } else {
-            throw new SimpleCommandExceptionType(Text.translatable("commands.decree.hunger.set.food.failed")).create();
+            throw new SimpleCommandExceptionType(Component.translatable("commands.decree.hunger.set.food.failed")).create();
         }
 
         return i;
     }
 
-    private static int setFood(ServerCommandSource source, int food) throws CommandSyntaxException {
-        Collection<ServerPlayerEntity> players = new ArrayList<>();
+    private static int setFood(CommandSourceStack source, int food) throws CommandSyntaxException {
+        Collection<ServerPlayer> players = new ArrayList<>();
         players.add(source.getPlayer());
 
         return setFood(source, players, food);
     }
 
-    private static int setExhaustion(ServerCommandSource source, Collection<ServerPlayerEntity> players, float exhaustion) throws CommandSyntaxException {
+    private static int setExhaustion(CommandSourceStack source, Collection<ServerPlayer> players, float exhaustion) throws CommandSyntaxException {
         int i = 0;
 
-        for (ServerPlayerEntity player : players) {
-            player.getHungerManager().exhaustion = exhaustion;
+        for (ServerPlayer player : players) {
+            player.getFoodData().exhaustionLevel = exhaustion;
             i++;
         }
 
         if (i > 0) {
-            source.sendFeedback(() -> Text.translatable("commands.decree.hunger.set.exhaustion.success", exhaustion), false);
+            source.sendSuccess(() -> Component.translatable("commands.decree.hunger.set.exhaustion.success", exhaustion), false);
         } else {
-            throw new SimpleCommandExceptionType(Text.translatable("commands.decree.hunger.set.exhaustion.failed")).create();
+            throw new SimpleCommandExceptionType(Component.translatable("commands.decree.hunger.set.exhaustion.failed")).create();
         }
 
         return i;
     }
 
-    private static int setExhaustion(ServerCommandSource source, float exhaustion) throws CommandSyntaxException {
-        Collection<ServerPlayerEntity> players = new ArrayList<>();
+    private static int setExhaustion(CommandSourceStack source, float exhaustion) throws CommandSyntaxException {
+        Collection<ServerPlayer> players = new ArrayList<>();
         players.add(source.getPlayer());
 
         return setExhaustion(source, players, exhaustion);
     }
 
-    private static int setSaturation(ServerCommandSource source, Collection<ServerPlayerEntity> players, float saturation) throws CommandSyntaxException {
+    private static int setSaturation(CommandSourceStack source, Collection<ServerPlayer> players, float saturation) throws CommandSyntaxException {
         int i = 0;
 
-        for (ServerPlayerEntity player : players) {
-            player.getHungerManager().setSaturationLevel(saturation);
+        for (ServerPlayer player : players) {
+            player.getFoodData().setSaturation(saturation);
             i++;
         }
 
         if (i > 0) {
-            source.sendFeedback(() -> Text.translatable("commands.decree.hunger.set.saturation.success", saturation), false);
+            source.sendSuccess(() -> Component.translatable("commands.decree.hunger.set.saturation.success", saturation), false);
         } else {
-            throw new SimpleCommandExceptionType(Text.translatable("commands.decree.hunger.set.saturation.failed")).create();
+            throw new SimpleCommandExceptionType(Component.translatable("commands.decree.hunger.set.saturation.failed")).create();
         }
 
         return i;
     }
 
-    private static int setSaturation(ServerCommandSource source, float saturation) throws CommandSyntaxException {
-        Collection<ServerPlayerEntity> players = new ArrayList<>();
+    private static int setSaturation(CommandSourceStack source, float saturation) throws CommandSyntaxException {
+        Collection<ServerPlayer> players = new ArrayList<>();
         players.add(source.getPlayer());
 
         return setSaturation(source, players, saturation);
     }
 
-    private static int addFood(ServerCommandSource source, Collection<ServerPlayerEntity> players, int food) throws CommandSyntaxException {
+    private static int addFood(CommandSourceStack source, Collection<ServerPlayer> players, int food) throws CommandSyntaxException {
         int i = 0;
 
-        for (ServerPlayerEntity player : players) {
-            HungerManager hungerManager = player.getHungerManager();
+        for (ServerPlayer player : players) {
+            FoodData hungerManager = player.getFoodData();
             hungerManager.setFoodLevel(food + hungerManager.getFoodLevel());
             i++;
         }
 
         if (i > 0) {
-            source.sendFeedback(() -> Text.translatable("commands.decree.hunger.add.food.success", food), false);
+            source.sendSuccess(() -> Component.translatable("commands.decree.hunger.add.food.success", food), false);
         } else {
-            throw new SimpleCommandExceptionType(Text.translatable("commands.decree.hunger.add.food.failed")).create();
+            throw new SimpleCommandExceptionType(Component.translatable("commands.decree.hunger.add.food.failed")).create();
         }
 
         return i;
     }
 
-    private static int addFood(ServerCommandSource source, int food) throws CommandSyntaxException {
-        Collection<ServerPlayerEntity> players = new ArrayList<>();
+    private static int addFood(CommandSourceStack source, int food) throws CommandSyntaxException {
+        Collection<ServerPlayer> players = new ArrayList<>();
         players.add(source.getPlayer());
 
         return addFood(source, players, food);
     }
 
-    private static int addExhaustion(ServerCommandSource source, Collection<ServerPlayerEntity> players, float exhaustion) throws CommandSyntaxException {
+    private static int addExhaustion(CommandSourceStack source, Collection<ServerPlayer> players, float exhaustion) throws CommandSyntaxException {
         int i = 0;
 
-        for (ServerPlayerEntity player : players) {
-            HungerManager hungerManager = player.getHungerManager();
+        for (ServerPlayer player : players) {
+            FoodData hungerManager = player.getFoodData();
             hungerManager.addExhaustion(exhaustion);
             i++;
         }
 
         if (i > 0) {
-            source.sendFeedback(() -> Text.translatable("commands.decree.hunger.add.exhaustion.success", exhaustion), false);
+            source.sendSuccess(() -> Component.translatable("commands.decree.hunger.add.exhaustion.success", exhaustion), false);
         } else {
-            throw new SimpleCommandExceptionType(Text.translatable("commands.decree.hunger.add.exhaustion.failed")).create();
+            throw new SimpleCommandExceptionType(Component.translatable("commands.decree.hunger.add.exhaustion.failed")).create();
         }
 
         return i;
     }
 
-    private static int addExhaustion(ServerCommandSource source, float exhaustion) throws CommandSyntaxException {
-        Collection<ServerPlayerEntity> players = new ArrayList<>();
+    private static int addExhaustion(CommandSourceStack source, float exhaustion) throws CommandSyntaxException {
+        Collection<ServerPlayer> players = new ArrayList<>();
         players.add(source.getPlayer());
 
         return addExhaustion(source, players, exhaustion);
     }
 
-    private static int addSaturation(ServerCommandSource source, Collection<ServerPlayerEntity> players, float saturation) throws CommandSyntaxException {
+    private static int addSaturation(CommandSourceStack source, Collection<ServerPlayer> players, float saturation) throws CommandSyntaxException {
         int i = 0;
 
-        for (ServerPlayerEntity player : players) {
-            HungerManager hungerManager = player.getHungerManager();
-            hungerManager.setSaturationLevel(saturation + hungerManager.getSaturationLevel());
+        for (ServerPlayer player : players) {
+            FoodData hungerManager = player.getFoodData();
+            hungerManager.setSaturation(saturation + hungerManager.getSaturationLevel());
             i++;
         }
 
         if (i > 0) {
-            source.sendFeedback(() -> Text.translatable("commands.decree.hunger.add.saturation.success", saturation), false);
+            source.sendSuccess(() -> Component.translatable("commands.decree.hunger.add.saturation.success", saturation), false);
         } else {
-            throw new SimpleCommandExceptionType(Text.translatable("commands.decree.hunger.add.saturation.failed")).create();
+            throw new SimpleCommandExceptionType(Component.translatable("commands.decree.hunger.add.saturation.failed")).create();
         }
 
         return i;
     }
 
-    private static int addSaturation(ServerCommandSource source, float saturation) throws CommandSyntaxException {
-        Collection<ServerPlayerEntity> players = new ArrayList<>();
+    private static int addSaturation(CommandSourceStack source, float saturation) throws CommandSyntaxException {
+        Collection<ServerPlayer> players = new ArrayList<>();
         players.add(source.getPlayer());
 
         return addSaturation(source, players, saturation);
     }
 
-    private static int queryFood(ServerCommandSource source, ServerPlayerEntity player) {
-        int hunger = player.getHungerManager().getFoodLevel();
-        source.sendFeedback(() -> Text.translatable("commands.decree.hunger.query.food.success", hunger), false);
+    private static int queryFood(CommandSourceStack source, ServerPlayer player) {
+        int hunger = player.getFoodData().getFoodLevel();
+        source.sendSuccess(() -> Component.translatable("commands.decree.hunger.query.food.success", hunger), false);
         return hunger > 0 ? 1 : 0;
     }
 
-    private static int queryFood(ServerCommandSource source) {
+    private static int queryFood(CommandSourceStack source) {
         return queryFood(source, Objects.requireNonNull(source.getPlayer()));
     }
 
-    private static int queryExhaustion(ServerCommandSource source, ServerPlayerEntity player) {
-        float exhaustion = player.getHungerManager().exhaustion;
-        source.sendFeedback(() -> Text.translatable("commands.decree.hunger.query.exhaustion.success", exhaustion), false);
+    private static int queryExhaustion(CommandSourceStack source, ServerPlayer player) {
+        float exhaustion = player.getFoodData().exhaustionLevel;
+        source.sendSuccess(() -> Component.translatable("commands.decree.hunger.query.exhaustion.success", exhaustion), false);
         return exhaustion > 0 ? 1 : 0;
     }
 
-    private static int queryExhaustion(ServerCommandSource source) {
+    private static int queryExhaustion(CommandSourceStack source) {
         return queryExhaustion(source, Objects.requireNonNull(source.getPlayer()));
     }
 
-    private static int querySaturation(ServerCommandSource source, ServerPlayerEntity player) {
-        float saturation = player.getHungerManager().getSaturationLevel();
-        source.sendFeedback(() -> Text.translatable("commands.decree.hunger.query.saturation.success", saturation), false);
+    private static int querySaturation(CommandSourceStack source, ServerPlayer player) {
+        float saturation = player.getFoodData().getSaturationLevel();
+        source.sendSuccess(() -> Component.translatable("commands.decree.hunger.query.saturation.success", saturation), false);
         return saturation > 0 ? 1 : 0;
     }
 
-    private static int querySaturation(ServerCommandSource source) {
+    private static int querySaturation(CommandSourceStack source) {
         return querySaturation(source, Objects.requireNonNull(source.getPlayer()));
     }
 }

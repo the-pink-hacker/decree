@@ -6,44 +6,44 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.thepinkhacker.decree.util.command.DecreeUtils;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.TamableAnimal;
 
 import java.util.Collection;
 
 public class SetOwnerCommand implements CommandRegistrationCallback {
     @Override
-    public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
-        LiteralCommandNode<ServerCommandSource> node = DecreeUtils.register(dispatcher, CommandConfigs.SET_OWNER, command -> command
-                .requires(CommandManager.requirePermissionLevel(CommandManager.GAMEMASTERS_CHECK))
-                .then(CommandManager.argument("pets", EntityArgumentType.entities())
-                        .then(CommandManager.argument("player", EntityArgumentType.player())
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment) {
+        LiteralCommandNode<CommandSourceStack> node = DecreeUtils.register(dispatcher, CommandConfigs.SET_OWNER, command -> command
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .then(Commands.argument("pets", EntityArgument.entities())
+                        .then(Commands.argument("player", EntityArgument.player())
                                 .executes(context -> setOwner(
                                         context.getSource(),
-                                        EntityArgumentType.getEntities(context, "pets"),
-                                        EntityArgumentType.getPlayer(context, "player"))
+                                        EntityArgument.getEntities(context, "pets"),
+                                        EntityArgument.getPlayer(context, "player"))
                                 )
                         )
                         .executes(context -> setOwner(
                                 context.getSource(),
-                                EntityArgumentType.getEntities(context, "pets"))
+                                EntityArgument.getEntities(context, "pets"))
                         )
                 )
         );
     }
 
-    private static int setOwner(ServerCommandSource source, Collection<? extends Entity> entities, ServerPlayerEntity player) throws CommandSyntaxException {
+    private static int setOwner(CommandSourceStack source, Collection<? extends Entity> entities, ServerPlayer player) throws CommandSyntaxException {
         int i = 0;
 
         for (Entity entity : entities) {
-            if (entity instanceof TameableEntity pet) {
-                if (!pet.isOwner(player)) {
+            if (entity instanceof TamableAnimal pet) {
+                if (!pet.isOwnedBy(player)) {
                     pet.setOwner(player);
                     i++;
                 }
@@ -51,15 +51,15 @@ public class SetOwnerCommand implements CommandRegistrationCallback {
         }
 
         if (i > 0) {
-            source.sendFeedback(() -> Text.translatable("commands.decree.setowner.success", player.getDisplayName()), false);
+            source.sendSuccess(() -> Component.translatable("commands.decree.setowner.success", player.getDisplayName()), false);
         } else {
-            throw new SimpleCommandExceptionType(Text.translatable("commands.decree.setowner.failed")).create();
+            throw new SimpleCommandExceptionType(Component.translatable("commands.decree.setowner.failed")).create();
         }
 
         return i;
     }
 
-    private static int setOwner(ServerCommandSource source, Collection<? extends Entity> entities) throws CommandSyntaxException {
+    private static int setOwner(CommandSourceStack source, Collection<? extends Entity> entities) throws CommandSyntaxException {
         return setOwner(source, entities, source.getPlayer());
     }
 }

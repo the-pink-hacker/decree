@@ -5,51 +5,51 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.thepinkhacker.decree.util.command.DecreeUtils;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 public class ClearSpawnPointCommand implements CommandRegistrationCallback {
     @Override
-    public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment) {
         DecreeUtils.register(dispatcher, CommandConfigs.CLEAR_SPAWN_POINT, command -> command
-                .requires(CommandManager.requirePermissionLevel(CommandManager.GAMEMASTERS_CHECK))
-                .then(CommandManager.argument("targets", EntityArgumentType.players())
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .then(Commands.argument("targets", EntityArgument.players())
                         .executes(context -> clearSpawnPoint(
                                 context.getSource(),
-                                EntityArgumentType.getPlayers(context, "targets"))
+                                EntityArgument.getPlayers(context, "targets"))
                         )
                 )
                 .executes(context -> clearSpawnPoint(context.getSource()))
         );
     }
 
-    private static int clearSpawnPoint(ServerCommandSource source, Collection<ServerPlayerEntity> players) throws CommandSyntaxException {
+    private static int clearSpawnPoint(CommandSourceStack source, Collection<ServerPlayer> players) throws CommandSyntaxException {
         int i = 0;
 
-        for (ServerPlayerEntity player : players) {
-            player.setSpawnPoint(null, false);
+        for (ServerPlayer player : players) {
+            player.setRespawnPosition(null, false);
             i++;
         }
 
         if (i > 0) {
             int finalI = i;
-            source.sendFeedback(() -> Text.translatable("commands.decree.clearspawnpoint.success", finalI), true);
+            source.sendSuccess(() -> Component.translatable("commands.decree.clearspawnpoint.success", finalI), true);
         } else {
-            throw new SimpleCommandExceptionType(Text.translatable("commands.decree.clearspawnpoint.failed")).create();
+            throw new SimpleCommandExceptionType(Component.translatable("commands.decree.clearspawnpoint.failed")).create();
         }
 
         return i;
     }
 
-    private static int clearSpawnPoint(ServerCommandSource source) throws CommandSyntaxException {
-        Collection<ServerPlayerEntity> players = new ArrayList<>();
+    private static int clearSpawnPoint(CommandSourceStack source) throws CommandSyntaxException {
+        Collection<ServerPlayer> players = new ArrayList<>();
         players.add(source.getPlayer());
 
         return clearSpawnPoint(source, players);

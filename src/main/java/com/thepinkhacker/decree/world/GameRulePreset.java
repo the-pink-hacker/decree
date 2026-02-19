@@ -2,20 +2,20 @@ package com.thepinkhacker.decree.world;
 
 import com.thepinkhacker.decree.Decree;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.level.ServerLevel;
 
 import java.nio.file.Path;
 
-// TODO: Add the ability to save and load presets from world creation
+// TODO: Add the ability to save and load presets from level creation
 public class GameRulePreset {
     public static final Path GAMERULE_PRESET_PATH = Path.of(FabricLoader.getInstance().getGameDir().toString(), Decree.MOD_ID, "gamerulepresets");
 
-    public static void save(Path path, ServerWorld world) {
+    public static void save(Path path, ServerLevel world) {
 //        JsonObject root = new JsonObject();
 //        JsonObject gamerules = new JsonObject();
 //
-//        Map<GameRules.Key<?>, GameRules.Rule<?>> rules = world.getServer().getGameRules().rules;
+//        Map<GameRules.Key<?>, GameRules.Rule<?>> rules = level.getServer().getGameRules().rules;
 //
 //        rules.forEach((key, rule) -> {
 //            if (rule instanceof GameRules.BooleanRule booleanRule) gamerules.addProperty(key.getName(), booleanRule.get());
@@ -36,7 +36,7 @@ public class GameRulePreset {
 //        }
     }
 
-    public static int load(Path path, ServerCommandSource source) {
+    public static int load(Path path, CommandSourceStack source) {
 //        AtomicInteger i = new AtomicInteger();
 //
 //        Gson gson = new Gson();
@@ -53,8 +53,8 @@ public class GameRulePreset {
 //        JsonElement element = root.get("gamerules");
 //
 //        if (element instanceof JsonObject presetRules) {
-//            ServerWorld world = source.getWorld();
-//            Map<GameRules.Key<?>, GameRules.Rule<?>> rules = world.getGameRules().rules;
+//            ServerWorld level = source.getWorld();
+//            Map<GameRules.Key<?>, GameRules.Rule<?>> rules = level.getGameRules().rules;
 //
 //            rules.forEach(((ruleKey, rule) -> {
 //                String ruleName = ruleKey.getName();
@@ -82,7 +82,7 @@ public class GameRulePreset {
 //                                        ),
 //                                        true
 //                                );
-//                                booleanRule.set(value, world.getServer());
+//                                booleanRule.set(value, level.getServer());
 //                                i.getAndIncrement();
 //                            }
 //                        } else if (primitive.isNumber()) {
@@ -100,7 +100,7 @@ public class GameRulePreset {
 //                                        ),
 //                                        true
 //                                );
-//                                intRule.set(value, world.getServer());
+//                                intRule.set(value, level.getServer());
 //                                i.getAndIncrement();
 //                            }
 //                        }

@@ -7,9 +7,9 @@ import com.thepinkhacker.decree.server.dedicated.command.StopCommand;
 import com.thepinkhacker.decree.world.DecreeGameRules;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.util.Identifier;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.Commands;
+import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,14 +45,14 @@ public class Decree implements ModInitializer {
     }
 
     private static void registerCommands(
-            CommandDispatcher<net.minecraft.server.command.ServerCommandSource> dispatcher,
-            CommandRegistryAccess registryAccess,
-            CommandManager.RegistrationEnvironment environment,
+            CommandDispatcher<net.minecraft.commands.CommandSourceStack> dispatcher,
+            CommandBuildContext registryAccess,
+            Commands.CommandSelection environment,
             CommandRegistrationCallback... commands
     ) {
         for (CommandRegistrationCallback command : commands) {
             if (command instanceof CommandRegistrationCallbackDedicated) {
-                if (environment.dedicated) command.register(dispatcher, registryAccess, environment);
+                if (environment.includeDedicated) command.register(dispatcher, registryAccess, environment);
             } else {
                 command.register(dispatcher, registryAccess, environment);
             }
@@ -60,6 +60,6 @@ public class Decree implements ModInitializer {
     }
 
     public static Identifier id(String id) {
-        return Identifier.of(MOD_ID, id);
+        return Identifier.fromNamespaceAndPath(MOD_ID, id);
     }
 }

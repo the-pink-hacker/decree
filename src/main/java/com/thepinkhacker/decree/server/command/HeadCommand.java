@@ -4,29 +4,29 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import com.thepinkhacker.decree.block.entity.SkullBlockEntityMutator;
 import com.thepinkhacker.decree.util.command.DecreeUtils;
+import com.thepinkhacker.decree.world.level.block.entity.SkullBlockEntityMutator;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.block.entity.SkullBlockEntity;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.argument.BlockPosArgumentType;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.command.argument.GameProfileArgumentType;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ProfileComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.server.PlayerConfigEntry;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.Text;
-import net.minecraft.text.Texts;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.GameProfileArgument;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.NameAndId;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ResolvableProfile;
+import net.minecraft.world.level.block.entity.SkullBlockEntity;
 
 import java.util.Collection;
 import java.util.List;
@@ -34,31 +34,31 @@ import java.util.List;
 public class HeadCommand implements CommandRegistrationCallback {
 
     private static final SimpleCommandExceptionType GIVE_EXCEPTION = new SimpleCommandExceptionType(
-            Text.translatable("commands.decree.head.give.failed")
+            Component.translatable("commands.decree.head.give.failed")
     );
     private static final SimpleCommandExceptionType UPDATE_EXCEPTION = new SimpleCommandExceptionType(
-            Text.translatable("commands.decree.head.update.failed")
+            Component.translatable("commands.decree.head.update.failed")
     );
 
     @Override
     public void register(
-            CommandDispatcher<ServerCommandSource> dispatcher,
-            CommandRegistryAccess registryAccess,
-            CommandManager.RegistrationEnvironment environment
+            CommandDispatcher<CommandSourceStack> dispatcher,
+            CommandBuildContext registryAccess,
+            Commands.CommandSelection environment
     ) {
-        LiteralCommandNode<ServerCommandSource> node = DecreeUtils.register(dispatcher, CommandConfigs.HEAD, command -> command
-                .then(CommandManager.literal("give")
-                        .requires(CommandManager.requirePermissionLevel(CommandManager.GAMEMASTERS_CHECK))
-                        .then(CommandManager.argument("targets", EntityArgumentType.players())
-                                .then(CommandManager.argument("player", GameProfileArgumentType.gameProfile())
+        LiteralCommandNode<CommandSourceStack> node = DecreeUtils.register(dispatcher, CommandConfigs.HEAD, command -> command
+                .then(Commands.literal("give")
+                        .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                        .then(Commands.argument("targets", EntityArgument.players())
+                                .then(Commands.argument("player", GameProfileArgument.gameProfile())
                                         .executes(context -> give(
                                                 context.getSource(),
-                                                EntityArgumentType.getPlayers(context, "targets"),
-                                                GameProfileArgumentType
-                                                        .getProfileArgument(context, "player")
+                                                EntityArgument.getPlayers(context, "targets"),
+                                                GameProfileArgument
+                                                        .getGameProfiles(context, "player")
                                                         .stream()
-                                                        .map(PlayerConfigEntry::name)
-                                                        .map(ProfileComponent::ofDynamic)
+                                                        .map(NameAndId::name)
+                                                        .map(ResolvableProfile::createUnresolved)
                                                         .toList()
                                         ))
                                 )
@@ -67,31 +67,31 @@ public class HeadCommand implements CommandRegistrationCallback {
                                 context.getSource()
                         ))
                 )
-                .then(CommandManager.literal("query")
-                        .then(CommandManager.argument("pos", BlockPosArgumentType.blockPos())
-                                .then(CommandManager.literal("uuid")
+                .then(Commands.literal("query")
+                        .then(Commands.argument("pos", BlockPosArgument.blockPos())
+                                .then(Commands.literal("uuid")
                                         .executes(context -> queryUUID(
                                                 context.getSource(),
-                                                BlockPosArgumentType.getLoadedBlockPos(context, "pos")
+                                                BlockPosArgument.getLoadedBlockPos(context, "pos")
                                         ))
                                 )
-                                .then(CommandManager.literal("name")
+                                .then(Commands.literal("name")
                                         .executes(context -> queryName(
                                                 context.getSource(),
-                                                BlockPosArgumentType.getLoadedBlockPos(context, "pos")
+                                                BlockPosArgument.getLoadedBlockPos(context, "pos")
                                         ))
                                 )
                         )
                 )
-                .then(CommandManager.literal("update")
-                        .requires(CommandManager.requirePermissionLevel(CommandManager.GAMEMASTERS_CHECK))
-                        .then(CommandManager.argument("pos", BlockPosArgumentType.blockPos())
-                                .then(CommandManager.argument("player", GameProfileArgumentType.gameProfile())
+                .then(Commands.literal("update")
+                        .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                        .then(Commands.argument("pos", BlockPosArgument.blockPos())
+                                .then(Commands.argument("player", GameProfileArgument.gameProfile())
                                         .executes(context -> updateHead(
                                                 context.getSource(),
-                                                BlockPosArgumentType.getLoadedBlockPos(context, "pos"),
-                                                GameProfileArgumentType
-                                                        .getProfileArgument(context, "player")
+                                                BlockPosArgument.getLoadedBlockPos(context, "pos"),
+                                                GameProfileArgument
+                                                        .getGameProfiles(context, "player")
                                                         .stream()
                                                         .findFirst()
                                                         .orElseThrow()
@@ -99,7 +99,7 @@ public class HeadCommand implements CommandRegistrationCallback {
                                 )
                                 .executes(context -> updateHead(
                                         context.getSource(),
-                                        BlockPosArgumentType.getLoadedBlockPos(context, "pos")
+                                        BlockPosArgument.getLoadedBlockPos(context, "pos")
                                 ))
                         )
                 )
@@ -107,24 +107,24 @@ public class HeadCommand implements CommandRegistrationCallback {
     }
 
     private static int give(
-            ServerCommandSource source,
-            Collection<ServerPlayerEntity> targets,
-            Collection<ProfileComponent> profiles
+            CommandSourceStack source,
+            Collection<ServerPlayer> targets,
+            Collection<ResolvableProfile> profiles
     ) throws CommandSyntaxException {
         int i = 0;
 
-        for (ServerPlayerEntity player : targets) {
-            for (ProfileComponent profile : profiles) {
-                final ItemStack stack = Items.PLAYER_HEAD.getDefaultStack();
-                stack.set(DataComponentTypes.PROFILE, profile);
+        for (ServerPlayer player : targets) {
+            for (ResolvableProfile profile : profiles) {
+                final ItemStack stack = Items.PLAYER_HEAD.getDefaultInstance();
+                stack.set(DataComponents.PROFILE, profile);
 
-                player.giveItemStack(stack);
+                player.addItem(stack);
                 i++;
             }
         }
 
         if (i > 0) {
-            source.sendFeedback(() -> Text.translatable("commands.decree.head.give.success"), false);
+            source.sendSuccess(() -> Component.translatable("commands.decree.head.give.success"), false);
         } else {
             throw GIVE_EXCEPTION.create();
         }
@@ -132,29 +132,29 @@ public class HeadCommand implements CommandRegistrationCallback {
         return i;
     }
 
-    private static int give(ServerCommandSource source) throws CommandSyntaxException {
-        ServerPlayerEntity player = source.getPlayer();
+    private static int give(CommandSourceStack source) throws CommandSyntaxException {
+        ServerPlayer player = source.getPlayer();
 
         if (player == null) {
             throw GIVE_EXCEPTION.create();
         }
 
-        return give(source, List.of(player), List.of(ProfileComponent.ofStatic(player.getGameProfile())));
+        return give(source, List.of(player), List.of(ResolvableProfile.createResolved(player.getGameProfile())));
     }
 
-    private static int queryUUID(ServerCommandSource source, BlockPos pos) {
-        ServerWorld world = source.getWorld();
+    private static int queryUUID(CommandSourceStack source, BlockPos pos) {
+        ServerLevel world = source.getLevel();
 
         if (world.getBlockEntity(pos) instanceof SkullBlockEntity head) {
-            ProfileComponent owner = head.getOwner();
+            ResolvableProfile owner = head.getOwnerProfile();
 
             if (owner == null) {
                 return -1;
             }
 
-            source.sendFeedback(() -> copyText(
+            source.sendSuccess(() -> copyText(
                     "commands.decree.head.query.uuid.success",
-                    owner.getGameProfile().id().toString()),
+                    owner.partialProfile().id().toString()),
                     false
             );
         }
@@ -162,19 +162,19 @@ public class HeadCommand implements CommandRegistrationCallback {
         return 1;
     }
 
-    private static int queryName(ServerCommandSource source, BlockPos pos) {
-        ServerWorld world = source.getWorld();
+    private static int queryName(CommandSourceStack source, BlockPos pos) {
+        ServerLevel world = source.getLevel();
 
         if (world.getBlockEntity(pos) instanceof SkullBlockEntity head) {
-            ProfileComponent owner = head.getOwner();
+            ResolvableProfile owner = head.getOwnerProfile();
 
             if (owner == null) {
                 return -1;
             }
 
-            source.sendFeedback(() -> copyText(
+            source.sendSuccess(() -> copyText(
                     "commands.decree.head.query.name.success",
-                    owner.getGameProfile().name()),
+                    owner.partialProfile().name()),
                     false
             );
         }
@@ -182,17 +182,17 @@ public class HeadCommand implements CommandRegistrationCallback {
         return 1;
     }
 
-    private static Text copyText(String key, String copyText) {
-        return Text.translatable(
+    private static Component copyText(String key, String copyText) {
+        return Component.translatable(
                 key,
-                Texts.bracketed(Text.literal(copyText)
-                        .styled((style) -> style
-                                .withColor(Formatting.GREEN)
+                ComponentUtils.wrapInSquareBrackets(Component.literal(copyText)
+                        .withStyle((style) -> style
+                                .withColor(ChatFormatting.GREEN)
                                 .withClickEvent(new ClickEvent.CopyToClipboard(
                                         copyText
                                 ))
                                 .withHoverEvent(new HoverEvent.ShowText(
-                                        Text.translatable(copyText)
+                                        Component.translatable(copyText)
                                 ))
                                 .withInsertion(copyText)
                         )
@@ -201,15 +201,15 @@ public class HeadCommand implements CommandRegistrationCallback {
     }
 
     private static int updateHead(
-            ServerCommandSource source,
+            CommandSourceStack source,
             BlockPos pos,
-            ProfileComponent profile
+            ResolvableProfile profile
     ) throws CommandSyntaxException {
-        if (source.getWorld().getBlockEntity(pos) instanceof SkullBlockEntityMutator entity) {
+        if (source.getLevel().getBlockEntity(pos) instanceof SkullBlockEntityMutator entity) {
             entity.decree$setOwner(profile);
             entity.decree$updateSkin();
 
-            source.sendFeedback(() -> Text.translatable("commands.decree.head.update.success"), false);
+            source.sendSuccess(() -> Component.translatable("commands.decree.head.update.success"), false);
 
             return 1;
         } else {
@@ -218,17 +218,17 @@ public class HeadCommand implements CommandRegistrationCallback {
     }
 
     private static int updateHead(
-            ServerCommandSource source,
+            CommandSourceStack source,
             BlockPos pos,
-            PlayerConfigEntry playerConfigEntry
+            NameAndId playerConfigEntry
     ) throws CommandSyntaxException {
-        return updateHead(source, pos, ProfileComponent.ofDynamic(playerConfigEntry.id()));
+        return updateHead(source, pos, ResolvableProfile.createUnresolved(playerConfigEntry.id()));
     }
 
-    private static int updateHead(ServerCommandSource source, BlockPos pos) throws CommandSyntaxException {
-        if (source.getWorld().getBlockEntity(pos) instanceof SkullBlockEntityMutator entity) {
+    private static int updateHead(CommandSourceStack source, BlockPos pos) throws CommandSyntaxException {
+        if (source.getLevel().getBlockEntity(pos) instanceof SkullBlockEntityMutator entity) {
             entity.decree$updateSkin();
-            source.sendFeedback(() -> Text.translatable("commands.decree.head.update.success"), false);
+            source.sendSuccess(() -> Component.translatable("commands.decree.head.update.success"), false);
 
             return 1;
         } else {

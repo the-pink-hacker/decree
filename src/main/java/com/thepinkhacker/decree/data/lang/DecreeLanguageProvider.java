@@ -6,18 +6,18 @@ import com.thepinkhacker.decree.server.command.NameCommand;
 import com.thepinkhacker.decree.world.DecreeGameRules;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.world.rule.GameRule;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.world.level.gamerules.GameRule;
 
 import java.util.concurrent.CompletableFuture;
 
 public class DecreeLanguageProvider extends FabricLanguageProvider {
-    public DecreeLanguageProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+    public DecreeLanguageProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
         super(dataOutput, registryLookup);
     }
 
     @Override
-    public void generateTranslations(RegistryWrapper.WrapperLookup lookup, TranslationBuilder builder) {
+    public void generateTranslations(HolderLookup.Provider lookup, TranslationBuilder builder) {
         add(
                 builder,
                 DecreeGameRules.ENDERMAN_PICKUP,
@@ -47,7 +47,7 @@ public class DecreeLanguageProvider extends FabricLanguageProvider {
                 builder,
                 DecreeGameRules.DO_MOB_EXPLOSION_GRIEFING,
                 "Do Mob Explosions Griefing",
-                "Whether mob explosions damage the world."
+                "Whether monster explosions damage the level."
         );
 
         add(
@@ -229,11 +229,11 @@ public class DecreeLanguageProvider extends FabricLanguageProvider {
             String description
     ) {
         add(builder, gamerule, title);
-        builder.add(gamerule.getTranslationKey() + ".description", description);
+        builder.add(gamerule.getDescriptionId() + ".description", description);
     }
     
     private static <T> void add(TranslationBuilder builder, GameRule<T> gamerule, String title) {
-        builder.add(gamerule.getTranslationKey(), title);
+        builder.add(gamerule.getDescriptionId(), title);
     }
 
     private static void add(TranslationBuilder builder, SimpleCommandExceptionType exception, String value) {
