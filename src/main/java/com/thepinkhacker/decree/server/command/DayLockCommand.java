@@ -12,20 +12,13 @@ import net.minecraft.commands.Commands;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.clock.ClockManager;
-import net.minecraft.world.clock.ServerClockManager;
+import net.minecraft.world.clock.ClockTimeMarkers;
 import net.minecraft.world.clock.WorldClock;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.gamerules.GameRules;
-
-import java.util.Optional;
 
 public class DayLockCommand implements CommandRegistrationCallback {
     private static final DynamicCommandExceptionType DIMENSION_CLOCK_EXCEPTION = new DynamicCommandExceptionType(dimension -> Component.translatable("commands.time.no_default_clock", dimension));
 
-    // Bedrock sets the game to 5,000 ticks, but this makes more sense
-    // Bedrock is weird
-    private static final int DAY_TICKS = 6_000;
 
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment) {
@@ -50,7 +43,9 @@ public class DayLockCommand implements CommandRegistrationCallback {
         rules.set(GameRules.ADVANCE_TIME, !dayLock, source.getServer());
 
         if (dayLock) {
-            level.clockManager().setTotalTicks(getClockHolder(level), DAY_TICKS);
+            // Bedrock sets the game to 5_000 ticks, but noon (6_000) makes more sense
+            // Bedrock is weird
+            level.clockManager().moveToTimeMarker(getClockHolder(level), ClockTimeMarkers.NOON);
         }
 
         String key = dayLock ? "commands.decree.daylock.enabled" : "commands.decree.daylock.disabled";
