@@ -7,7 +7,9 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.commands.WeatherCommand;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.saveddata.WeatherData;
 
 public class ToggleDownfallCommand implements CommandRegistrationCallback {
     @Override
@@ -19,11 +21,13 @@ public class ToggleDownfallCommand implements CommandRegistrationCallback {
     }
 
     private static int execute(CommandSourceStack source) {
-        ServerLevel world = source.getLevel();
+        ServerLevel level = source.getLevel();
 
-        world.setWeatherParameters(0, 0, !world.isRaining() && !world.isThundering(), false);
-
-        source.sendSuccess(() -> Component.translatable("commands.decree.toggledownfall.success"), true);
+        if (level.getWeatherData().isRaining()) {
+            WeatherCommand.setClear(source, -1);
+        } else {
+            WeatherCommand.setRain(source, -1);
+        }
 
         return 1;
     }

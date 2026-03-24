@@ -3,6 +3,7 @@ package com.thepinkhacker.decree.gametest;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.saveddata.WeatherData;
 
 public class DecreeGameTestHelper {
     private final GameTestHelper context;
@@ -11,16 +12,26 @@ public class DecreeGameTestHelper {
         this.context = context;
     }
 
-    public void assertWeatherClear() {
-        context.assertTrue(!context.getLevel().isRaining(), "Expected weather to be clear.");
+    public void assertWeatherNoRain() {
+        context.assertTrue(
+                !context.getLevel().getWeatherData().isRaining(),
+                "Expected weather to be clear."
+        );
     }
 
     public void assertWeatherRain() {
-        context.assertTrue(context.getLevel().isRaining(), "Expected weather to be raining.");
+        context.assertTrue(
+                context.getLevel().getWeatherData().isRaining(),
+                "Expected weather to be raining."
+        );
     }
 
-    public void assertWeatherThunder() {
-        context.assertTrue(context.getLevel().isThundering(), "Expected weather to be thundering.");
+    public void assertWeatherRainThunder() {
+        WeatherData weather = context.getLevel().getWeatherData();
+        context.assertTrue(
+                weather.isRaining() && weather.isThundering(),
+                "Expected weather to be thundering."
+        );
     }
 
     public void executeCommand(String command) {

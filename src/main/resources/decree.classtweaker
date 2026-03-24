@@ -1,4 +1,4 @@
-classTweaker v1 named
+classTweaker v1 official
 
 accessible field net/minecraft/world/food/FoodData exhaustionLevel F
 
@@ -9,3 +9,6 @@ accessible method net/minecraft/core/registries/BuiltInRegistries registerSimple
 accessible class net/minecraft/core/registries/BuiltInRegistries$RegistryBootstrap
 
 accessible field net/minecraft/world/entity/vehicle/minecart/MinecartBehavior minecart Lnet/minecraft/world/entity/vehicle/minecart/AbstractMinecart;
+
+accessible method net/minecraft/server/commands/WeatherCommand setClear (Lnet/minecraft/commands/CommandSourceStack;I)I
+accessible method net/minecraft/server/commands/WeatherCommand setRain (Lnet/minecraft/commands/CommandSourceStack;I)I

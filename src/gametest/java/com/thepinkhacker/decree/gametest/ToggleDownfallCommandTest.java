@@ -13,7 +13,7 @@ public class ToggleDownfallCommandTest implements CustomTestMethodInvoker {
 	public void testClear(DecreeGameTestHelper context) {
         context.getContext()
                 .startSequence()
-                .thenExecute(context::assertWeatherClear)
+                .thenExecute(context::assertWeatherNoRain)
                 .thenWaitUntil(() -> context.executeCommand("toggledownfall"))
                 .thenExecuteAfter(WAIT_AMOUNT, context::assertWeatherRain)
                 .thenSucceed();
@@ -25,7 +25,7 @@ public class ToggleDownfallCommandTest implements CustomTestMethodInvoker {
                 .startSequence()
                 .thenExecute(context::assertWeatherRain)
                 .thenWaitUntil(() -> context.executeCommand("toggledownfall"))
-                .thenExecuteAfter(WAIT_AMOUNT, context::assertWeatherClear)
+                .thenExecuteAfter(WAIT_AMOUNT, context::assertWeatherNoRain)
                 .thenSucceed();
 	}
 
@@ -33,9 +33,9 @@ public class ToggleDownfallCommandTest implements CustomTestMethodInvoker {
 	public void testThunder(DecreeGameTestHelper context) {
         context.getContext()
                 .startSequence()
-                .thenExecute(context::assertWeatherThunder)
+                .thenExecute(context::assertWeatherRainThunder)
                 .thenWaitUntil(() -> context.executeCommand("toggledownfall"))
-                .thenExecuteAfter(WAIT_AMOUNT, context::assertWeatherClear)
+                .thenExecuteAfter(WAIT_AMOUNT, context::assertWeatherNoRain)
                 .thenSucceed();
 	}
 

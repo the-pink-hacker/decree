@@ -4,7 +4,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.thepinkhacker.decree.Decree;
 import com.thepinkhacker.decree.server.command.NameCommand;
 import com.thepinkhacker.decree.world.DecreeGameRules;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.gamerules.GameRule;
@@ -12,8 +12,8 @@ import net.minecraft.world.level.gamerules.GameRule;
 import java.util.concurrent.CompletableFuture;
 
 public class DecreeLanguageProvider extends FabricLanguageProvider {
-    public DecreeLanguageProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
-        super(dataOutput, registryLookup);
+    public DecreeLanguageProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> lookup) {
+        super(output, lookup);
     }
 
     @Override
@@ -213,9 +213,6 @@ public class DecreeLanguageProvider extends FabricLanguageProvider {
                                 .child(GenericTranslationBuilder.Node.of("setowner")
                                         .child("failed", "Failed to set pet's owner")
                                         .child("success", "Set pet's owner to %s")
-                                )
-                                .child(GenericTranslationBuilder.Node.of("toggledownfall")
-                                        .child("success", "Toggled downfall")
                                 )
                         )
                 )

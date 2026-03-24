@@ -63,7 +63,6 @@
   "commands.decree.stop.immediate": "Stopping server now",
   "commands.decree.stop.stop": "Stopped server",
   "commands.decree.stop.time": "Stopping server in %s second(s)...",
-  "commands.decree.toggledownfall.success": "Toggled downfall",
   "gamerule.decree.enderman_pickup": "Do Enderman Pickup",
   "gamerule.decree.enderman_pickup.description": "Allow Endermen to pickup blocks.",
   "gamerule.decree.enderman_place": "Do Enderman Place",
@@ -75,7 +74,7 @@
   "gamerule.decree.minecart_max_speed_rider": "Max Rider Minecart Speed",
   "gamerule.decree.minecart_max_speed_rider.description": "Override the max speed for minecarts with riders.",
   "gamerule.decree.mob_explosion_griefing": "Do Mob Explosions Griefing",
-  "gamerule.decree.mob_explosion_griefing.description": "Whether mob explosions damage the world.",
+  "gamerule.decree.mob_explosion_griefing.description": "Whether monster explosions damage the level.",
   "gamerule.decree.nether_portal_mob_spawn": "Do Nether Portal Mob Spawn",
   "gamerule.decree.nether_portal_mob_spawn.description": "Enables zombified piglins randomly spawning from nether portals in the overworld."
 }
