@@ -37,17 +37,53 @@ public class DecreeGameRules {
             .buildAndRegister(Decree.id("mob_explosion_griefing"));
 
     public static final GameRule<Integer> MINECART_MAX_SPEED_EMPTY = GameRuleBuilder
-            .forInteger(0)
-            .range(0, 1_000)
+            .forInteger(-1)
+            .range(-1, 1_000)
             .category(GameRuleCategory.MISC)
             .requiredFeatures(MINECART_IMPROVEMENTS)
             .buildAndRegister(Decree.id("minecart_max_speed_empty"));
 
     public static final GameRule<Integer> MINECART_MAX_SPEED_RIDER = GameRuleBuilder
-            .forInteger(0)
-            .range(0, 1_000)
+            .forInteger(-1)
+            .range(-1, 1_000)
             .requiredFeatures(MINECART_IMPROVEMENTS)
             .buildAndRegister(Decree.id("minecart_max_speed_rider"));
+
+    public static final GameRule<Integer> MINECART_MAX_SPEED_CHEST = GameRuleBuilder
+            .forInteger(-1)
+            .range(-1, 1_000)
+            .requiredFeatures(MINECART_IMPROVEMENTS)
+            .buildAndRegister(Decree.id("minecart_max_speed_chest"));
+
+    public static final GameRule<Integer> MINECART_MAX_SPEED_FURNACE = GameRuleBuilder
+            .forInteger(-1)
+            .range(-1, 1_000)
+            .requiredFeatures(MINECART_IMPROVEMENTS)
+            .buildAndRegister(Decree.id("minecart_max_speed_furnace"));
+
+    public static final GameRule<Integer> MINECART_MAX_SPEED_HOPPER = GameRuleBuilder
+            .forInteger(-1)
+            .range(-1, 1_000)
+            .requiredFeatures(MINECART_IMPROVEMENTS)
+            .buildAndRegister(Decree.id("minecart_max_speed_hopper"));
+
+    public static final GameRule<Integer> MINECART_MAX_SPEED_TNT = GameRuleBuilder
+            .forInteger(-1)
+            .range(-1, 1_000)
+            .requiredFeatures(MINECART_IMPROVEMENTS)
+            .buildAndRegister(Decree.id("minecart_max_speed_tnt"));
+
+    public static final GameRule<Integer> MINECART_MAX_SPEED_COMMAND_BLOCK = GameRuleBuilder
+            .forInteger(-1)
+            .range(-1, 1_000)
+            .requiredFeatures(MINECART_IMPROVEMENTS)
+            .buildAndRegister(Decree.id("minecart_max_speed_command_block"));
+
+    public static final GameRule<Integer> MINECART_MAX_SPEED_SPAWNER = GameRuleBuilder
+            .forInteger(-1)
+            .range(-1, 1_000)
+            .requiredFeatures(MINECART_IMPROVEMENTS)
+            .buildAndRegister(Decree.id("minecart_max_speed_command_spawner"));
 
     // Java is weird and won't init the variables unless this runs
     // Otherwise it would try to init after the registry is frozen

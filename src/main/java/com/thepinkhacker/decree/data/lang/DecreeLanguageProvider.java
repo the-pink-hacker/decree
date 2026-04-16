@@ -64,6 +64,48 @@ public class DecreeLanguageProvider extends FabricLanguageProvider {
                 "Override the max speed for minecarts with riders."
         );
 
+        add(
+                builder,
+                DecreeGameRules.MINECART_MAX_SPEED_CHEST,
+                "Max Minecart with Chest Speed",
+                "Override the max speed for minecarts with chests."
+        );
+
+        add(
+                builder,
+                DecreeGameRules.MINECART_MAX_SPEED_FURNACE,
+                "Max Minecart with Furnace Speed",
+                "Override the max speed for minecarts with furnaces."
+        );
+
+        add(
+                builder,
+                DecreeGameRules.MINECART_MAX_SPEED_HOPPER,
+                "Max Minecart with Hopper Speed",
+                "Override the max speed for minecarts with hoppers."
+        );
+
+        add(
+                builder,
+                DecreeGameRules.MINECART_MAX_SPEED_TNT,
+                "Max Minecart with TNT Speed",
+                "Override the max speed for minecarts with TNT."
+        );
+
+        add(
+                builder,
+                DecreeGameRules.MINECART_MAX_SPEED_COMMAND_BLOCK,
+                "Max Minecart with command block Speed",
+                "Override the max speed for minecarts with command blocks."
+        );
+
+        add(
+                builder,
+                DecreeGameRules.MINECART_MAX_SPEED_SPAWNER,
+                "Max Minecart with Monster Spawner Speed",
+                "Override the max speed for minecarts with monster spawners."
+        );
+
         add(builder, NameCommand.ENTITY_FAILED, "Failed to name entity");
         add(builder, NameCommand.ENTITY_REMOVE_FAILED, "Failed to remove entity name");
         add(builder, NameCommand.ITEM_FAILED, "Failed to name item");
