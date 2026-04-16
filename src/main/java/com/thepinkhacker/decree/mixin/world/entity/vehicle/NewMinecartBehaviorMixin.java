@@ -24,7 +24,7 @@ public abstract class NewMinecartBehaviorMixin extends MinecartBehavior {
             )
     )
     private Object decree$getMaxSpeed(GameRules instance, GameRule<Integer> rule) {
-        boolean hasRider = this.minecart.hasExactlyOnePlayerPassenger();
+        boolean hasRider = this.minecart.isVehicle();
 
         int speed = instance.get(
                 hasRider ? DecreeGameRules.MINECART_MAX_SPEED_RIDER : DecreeGameRules.MINECART_MAX_SPEED_EMPTY
