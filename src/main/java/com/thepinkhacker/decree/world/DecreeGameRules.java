@@ -85,6 +85,11 @@ public class DecreeGameRules {
             .requiredFeatures(MINECART_IMPROVEMENTS)
             .buildAndRegister(Decree.id("minecart_max_speed_command_spawner"));
 
+    public static final GameRule<Integer> MINECART_DISMOUNT_STOP_COOLDOWN = GameRuleBuilder
+            .forInteger(-1)
+            .minValue(-1)
+            .buildAndRegister(Decree.id("minecart_dismount_cooldown"));
+
     // Java is weird and won't init the variables unless this runs
     // Otherwise it would try to init after the registry is frozen
     public static void register() {}

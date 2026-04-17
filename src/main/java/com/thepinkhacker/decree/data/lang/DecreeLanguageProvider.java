@@ -95,7 +95,7 @@ public class DecreeLanguageProvider extends FabricLanguageProvider {
         add(
                 builder,
                 DecreeGameRules.MINECART_MAX_SPEED_COMMAND_BLOCK,
-                "Max Minecart with command block Speed",
+                "Max Minecart with Command Block Speed",
                 "Override the max speed for minecarts with command blocks."
         );
 
@@ -104,6 +104,13 @@ public class DecreeLanguageProvider extends FabricLanguageProvider {
                 DecreeGameRules.MINECART_MAX_SPEED_SPAWNER,
                 "Max Minecart with Monster Spawner Speed",
                 "Override the max speed for minecarts with monster spawners."
+        );
+
+        add(
+                builder,
+                DecreeGameRules.MINECART_DISMOUNT_STOP_COOLDOWN,
+                "Minecart Dismount Stop Cooldown",
+                "On dismount, for how many ticks a minecart should stop moving."
         );
 
         add(builder, NameCommand.ENTITY_EXCEPTION, "Failed to name entity");

@@ -1,6 +1,7 @@
 package com.thepinkhacker.decree.mixin.world.entity;
 
 import com.thepinkhacker.decree.registry.tag.DecreeDimensionTypeTags;
+import com.thepinkhacker.decree.world.entity.vehicle.DismountStopCooldown;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -11,6 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.EnumSet;
@@ -30,10 +32,10 @@ public abstract class LivingEntityMixin extends Entity {
             cancellable = true
     )
     private void decree$canGlide(CallbackInfoReturnable<Boolean> cir) {
-        if (this.level() instanceof ServerLevel world) {
-            if (this.level().dimensionTypeRegistration().is(DecreeDimensionTypeTags.GLIDE_BLACKLIST)) {
+        if (this.level() instanceof ServerLevel level) {
+            if (level.dimensionTypeRegistration().is(DecreeDimensionTypeTags.GLIDE_BLACKLIST)) {
                 this.teleportTo(
-                        world,
+                        level,
                         0.0d,
                         0.0d,
                         0.0d,
@@ -44,6 +46,17 @@ public abstract class LivingEntityMixin extends Entity {
                 );
                 cir.cancel();
             }
+        }
+    }
+
+    @Inject(
+            method = "dismountVehicle",
+            at = @At("HEAD")
+    )
+    private void decree$dismountVehicle(Entity vehicle, CallbackInfo ci) {
+        if (this.level() instanceof ServerLevel level
+                && vehicle instanceof DismountStopCooldown cooldown) {
+            cooldown.decree$startStopCooldown(level.getGameRules());
         }
     }
 }

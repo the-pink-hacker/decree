@@ -5,10 +5,12 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "server.level.ServerLevelMixin",
+    "world.entity.EntityMixin",
     "world.entity.LivingEntityMixin",
     "world.entity.item.ItemEntityMixin",
     "world.entity.monster.EndermanLeaveBlockGoalMixin",
     "world.entity.monster.EndermanTakeBlockGoalMixin",
+    "world.entity.vehicle.AbstractMinecartMixin",
     "world.entity.vehicle.NewMinecartBehaviorMixin",
     "world.level.block.NetherPortalBlockMixin",
     "world.level.block.entity.SkullBlockEntityMixin"
