@@ -1,5 +1,8 @@
 # Decree
 
+Currently, not production ready. The version on Modrinth is very out-of-date.
+I'm mostly supporting this for my own personal use. Might stabilize at future date.
+
 ## Commands
 
 | Command           | Description                                                                             |
