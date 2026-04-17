@@ -19,6 +19,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class HealthCommand implements CommandRegistrationCallback {
+    public static final SimpleCommandExceptionType SET_HEALTH_EXCEPTION = new SimpleCommandExceptionType(Component.translatable("commands.decree.health.set.failed"));
+    public static final SimpleCommandExceptionType ADD_HEALTH_EXCEPTION = new SimpleCommandExceptionType(Component.translatable("commands.decree.health.add.failed"));
+    public static final SimpleCommandExceptionType QUERY_HEALTH_EXCEPTION = new SimpleCommandExceptionType(Component.translatable("commands.decree.health.query.failed"));
+
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment) {
         LiteralCommandNode<CommandSourceStack> node = DecreeUtils.register(dispatcher, CommandConfigs.HEALTH, command -> command
@@ -82,7 +86,7 @@ public class HealthCommand implements CommandRegistrationCallback {
         if (i > 0) {
             source.sendSuccess(() -> Component.translatable("commands.decree.health.set.success", health), false);
         } else {
-            throw new SimpleCommandExceptionType(Component.translatable("commands.decree.health.set.failed")).create();
+            throw SET_HEALTH_EXCEPTION.create();
         }
 
         return i;
@@ -108,7 +112,7 @@ public class HealthCommand implements CommandRegistrationCallback {
         if (i > 0) {
             source.sendSuccess(() -> Component.translatable("commands.decree.health.add.success", health), false);
         } else {
-            throw new SimpleCommandExceptionType(Component.translatable("commands.decree.health.add.failed")).create();
+            throw ADD_HEALTH_EXCEPTION.create();
         }
 
         return i;
@@ -127,7 +131,7 @@ public class HealthCommand implements CommandRegistrationCallback {
             return 1;
         }
 
-        throw new SimpleCommandExceptionType(Component.translatable("commands.decree.health.query.failed")).create();
+        throw QUERY_HEALTH_EXCEPTION.create();
     }
 
     private static int queryHealth(CommandSourceStack source) throws CommandSyntaxException {

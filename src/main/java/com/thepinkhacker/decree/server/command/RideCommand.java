@@ -26,12 +26,12 @@ import net.minecraft.world.phys.Vec3;
 import java.util.Collection;
 
 public class RideCommand implements CommandRegistrationCallback {
-    private static final SimpleCommandExceptionType START_RIDING_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.decree.ride.start_riding.failed"));
-    private static final SimpleCommandExceptionType STOP_RIDING_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.decree.ride.stop_riding.failed"));
-    private static final SimpleCommandExceptionType EVICT_RIDERS_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.decree.ride.evict_riders.failed"));
-    private static final SimpleCommandExceptionType SUMMON_RIDER_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.decree.ride.summon_rider.failed"));
-    private static final SimpleCommandExceptionType SUMMON_RIDE_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.decree.ride.summon_ride.failed"));
-    private static final SimpleCommandExceptionType FAILED_UUID_EXCEPTION = new SimpleCommandExceptionType(Component.translatable("commands.decree.summon.failed.uuid"));
+    public static final SimpleCommandExceptionType START_RIDING_EXCEPTION = new SimpleCommandExceptionType(Component.translatable("commands.decree.ride.start_riding.failed"));
+    public static final SimpleCommandExceptionType STOP_RIDING_EXCEPTION = new SimpleCommandExceptionType(Component.translatable("commands.decree.ride.stop_riding.failed"));
+    public static final SimpleCommandExceptionType EVICT_RIDERS_EXCEPTION = new SimpleCommandExceptionType(Component.translatable("commands.decree.ride.evict_riders.failed"));
+    public static final SimpleCommandExceptionType SUMMON_RIDER_EXCEPTION = new SimpleCommandExceptionType(Component.translatable("commands.decree.ride.summon_rider.failed"));
+    public static final SimpleCommandExceptionType SUMMON_RIDE_EXCEPTION = new SimpleCommandExceptionType(Component.translatable("commands.decree.ride.summon_ride.failed"));
+    public static final SimpleCommandExceptionType FAILED_UUID_EXCEPTION = new SimpleCommandExceptionType(Component.translatable("commands.decree.ride.summon.failed.uuid"));
 
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment) {
@@ -130,7 +130,7 @@ public class RideCommand implements CommandRegistrationCallback {
         if (i > 0) {
             source.sendSuccess(() -> Component.translatable("commands.decree.ride.start_riding.success"), false);
         } else {
-            throw START_RIDING_FAILED.create();
+            throw START_RIDING_EXCEPTION.create();
         }
 
         return i;
@@ -163,7 +163,7 @@ public class RideCommand implements CommandRegistrationCallback {
         if (i > 0) {
             source.sendSuccess(() -> Component.translatable("commands.decree.ride.stop_riding.success"), false);
         } else {
-            throw STOP_RIDING_FAILED.create();
+            throw STOP_RIDING_EXCEPTION.create();
         }
 
         return i;
@@ -186,7 +186,7 @@ public class RideCommand implements CommandRegistrationCallback {
         if (i > 0) {
             source.sendSuccess(() -> Component.translatable("commands.decree.ride.evict_riders.success"), false);
         } else {
-            throw EVICT_RIDERS_FAILED.create();
+            throw EVICT_RIDERS_EXCEPTION.create();
         }
 
         return i;
@@ -228,7 +228,7 @@ public class RideCommand implements CommandRegistrationCallback {
             }
         }
 
-        throw SUMMON_RIDER_FAILED.create();
+        throw SUMMON_RIDER_EXCEPTION.create();
     }
 
     /**
@@ -265,7 +265,7 @@ public class RideCommand implements CommandRegistrationCallback {
             }
         }
 
-        throw SUMMON_RIDE_FAILED.create();
+        throw SUMMON_RIDE_EXCEPTION.create();
     }
 
     public enum TeleportRule {

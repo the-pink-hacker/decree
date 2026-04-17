@@ -21,10 +21,10 @@ import net.minecraft.world.item.ItemStack;
 import java.util.Collection;
 
 public class NameCommand implements CommandRegistrationCallback {
-    public static final SimpleCommandExceptionType ITEM_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.decree.name.item.name.failed"));
-    public static final SimpleCommandExceptionType ITEM_REMOVE_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.decree.name.item.remove.failed"));
-    public static final SimpleCommandExceptionType ENTITY_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.decree.name.entity.name.failed"));
-    public static final SimpleCommandExceptionType ENTITY_REMOVE_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.decree.name.entity.remove.failed"));
+    public static final SimpleCommandExceptionType ITEM_EXCEPTION = new SimpleCommandExceptionType(Component.translatable("commands.decree.name.item.name.failed"));
+    public static final SimpleCommandExceptionType ITEM_REMOVE_EXCEPTION = new SimpleCommandExceptionType(Component.translatable("commands.decree.name.item.remove.failed"));
+    public static final SimpleCommandExceptionType ENTITY_EXCEPTION = new SimpleCommandExceptionType(Component.translatable("commands.decree.name.entity.name.failed"));
+    public static final SimpleCommandExceptionType ENTITY_REMOVE_EXCEPTION = new SimpleCommandExceptionType(Component.translatable("commands.decree.name.entity.remove.failed"));
 
     @Override
     public void register(
@@ -102,7 +102,7 @@ public class NameCommand implements CommandRegistrationCallback {
             );
             return i;
         } else {
-            throw ITEM_FAILED.create();
+            throw ITEM_EXCEPTION.create();
         }
     }
 
@@ -127,7 +127,7 @@ public class NameCommand implements CommandRegistrationCallback {
             );
             return i;
         } else {
-            throw ITEM_FAILED.create();
+            throw ITEM_EXCEPTION.create();
         }
     }
 
@@ -171,7 +171,7 @@ public class NameCommand implements CommandRegistrationCallback {
             source.sendSuccess(() -> Component.translatable("commands.decree.name.item.remove.success"), false);
             return i;
         } else {
-            throw ITEM_REMOVE_FAILED.create();
+            throw ITEM_REMOVE_EXCEPTION.create();
         }
     }
 
@@ -192,7 +192,7 @@ public class NameCommand implements CommandRegistrationCallback {
             source.sendSuccess(() -> Component.translatable("commands.decree.name.item.remove.success"), false);
             return i;
         } else {
-            throw ITEM_REMOVE_FAILED.create();
+            throw ITEM_REMOVE_EXCEPTION.create();
         }
     }
 
@@ -241,7 +241,7 @@ public class NameCommand implements CommandRegistrationCallback {
             );
             return i;
         } else {
-            throw ENTITY_FAILED.create();
+            throw ENTITY_EXCEPTION.create();
         }
     }
 
@@ -266,7 +266,7 @@ public class NameCommand implements CommandRegistrationCallback {
             );
             return i;
         } else {
-            throw ENTITY_REMOVE_FAILED.create();
+            throw ENTITY_REMOVE_EXCEPTION.create();
         }
     }
 }

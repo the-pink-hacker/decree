@@ -21,6 +21,13 @@ import java.util.Collection;
 import java.util.Objects;
 
 public class HungerCommand implements CommandRegistrationCallback {
+    public static final SimpleCommandExceptionType SET_FOOD_EXCEPTION = new SimpleCommandExceptionType(Component.translatable("commands.decree.hunger.set.food.failed"));
+    public static final SimpleCommandExceptionType ADD_FOOD_EXCEPTION = new SimpleCommandExceptionType(Component.translatable("commands.decree.hunger.add.food.failed"));
+    public static final SimpleCommandExceptionType SET_EXHAUSTION_EXCEPTION = new SimpleCommandExceptionType(Component.translatable("commands.decree.hunger.set.exhaustion.failed"));
+    public static final SimpleCommandExceptionType ADD_EXHAUSTION_EXCEPTION = new SimpleCommandExceptionType(Component.translatable("commands.decree.hunger.add.exhaustion.failed"));
+    public static final SimpleCommandExceptionType SET_SATURATION_EXCEPTION = new SimpleCommandExceptionType(Component.translatable("commands.decree.hunger.set.saturation.failed"));
+    public static final SimpleCommandExceptionType ADD_SATURATION_EXCEPTION = new SimpleCommandExceptionType(Component.translatable("commands.decree.hunger.add.saturation.failed"));
+
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment) {
         LiteralCommandNode<CommandSourceStack> node = DecreeUtils.register(dispatcher, CommandConfigs.HUNGER, command -> command
@@ -113,14 +120,14 @@ public class HungerCommand implements CommandRegistrationCallback {
                         )
                         .then(Commands.literal("exhaustion")
                                 .then(Commands.argument("exhaustion", FloatArgumentType.floatArg())
-                                        .executes(context -> setExhaustion(
+                                        .executes(context -> addExhaustion(
                                                 context.getSource(),
                                                 FloatArgumentType.getFloat(context, "exhaustion"))
                                         )
                                 )
                                 .then(Commands.argument("targets", EntityArgument.players())
                                         .then(Commands.argument("exhaustion", FloatArgumentType.floatArg())
-                                                .executes(context -> setExhaustion(
+                                                .executes(context -> addExhaustion(
                                                         context.getSource(),
                                                         EntityArgument.getPlayers(context, "targets"),
                                                         FloatArgumentType.getFloat(context, "exhaustion"))
@@ -130,14 +137,14 @@ public class HungerCommand implements CommandRegistrationCallback {
                         )
                         .then(Commands.literal("saturation")
                                 .then(Commands.argument("saturation", FloatArgumentType.floatArg())
-                                        .executes(context -> setSaturation(
+                                        .executes(context -> addSaturation(
                                                 context.getSource(),
                                                 FloatArgumentType.getFloat(context, "saturation"))
                                         )
                                 )
                                 .then(Commands.argument("targets", EntityArgument.players())
                                         .then(Commands.argument("saturation", FloatArgumentType.floatArg())
-                                                .executes(context -> setSaturation(
+                                                .executes(context -> addSaturation(
                                                         context.getSource(),
                                                         EntityArgument.getPlayers(context, "targets"),
                                                         FloatArgumentType.getFloat(context, "saturation"))
@@ -205,7 +212,7 @@ public class HungerCommand implements CommandRegistrationCallback {
         if (i > 0) {
             source.sendSuccess(() -> Component.translatable("commands.decree.hunger.set.food.success", food), false);
         } else {
-            throw new SimpleCommandExceptionType(Component.translatable("commands.decree.hunger.set.food.failed")).create();
+            throw SET_FOOD_EXCEPTION.create();
         }
 
         return i;
@@ -229,7 +236,7 @@ public class HungerCommand implements CommandRegistrationCallback {
         if (i > 0) {
             source.sendSuccess(() -> Component.translatable("commands.decree.hunger.set.exhaustion.success", exhaustion), false);
         } else {
-            throw new SimpleCommandExceptionType(Component.translatable("commands.decree.hunger.set.exhaustion.failed")).create();
+            throw SET_EXHAUSTION_EXCEPTION.create();
         }
 
         return i;
@@ -253,7 +260,7 @@ public class HungerCommand implements CommandRegistrationCallback {
         if (i > 0) {
             source.sendSuccess(() -> Component.translatable("commands.decree.hunger.set.saturation.success", saturation), false);
         } else {
-            throw new SimpleCommandExceptionType(Component.translatable("commands.decree.hunger.set.saturation.failed")).create();
+            throw SET_SATURATION_EXCEPTION.create();
         }
 
         return i;
@@ -278,7 +285,7 @@ public class HungerCommand implements CommandRegistrationCallback {
         if (i > 0) {
             source.sendSuccess(() -> Component.translatable("commands.decree.hunger.add.food.success", food), false);
         } else {
-            throw new SimpleCommandExceptionType(Component.translatable("commands.decree.hunger.add.food.failed")).create();
+            throw ADD_FOOD_EXCEPTION.create();
         }
 
         return i;
@@ -303,7 +310,7 @@ public class HungerCommand implements CommandRegistrationCallback {
         if (i > 0) {
             source.sendSuccess(() -> Component.translatable("commands.decree.hunger.add.exhaustion.success", exhaustion), false);
         } else {
-            throw new SimpleCommandExceptionType(Component.translatable("commands.decree.hunger.add.exhaustion.failed")).create();
+            throw ADD_EXHAUSTION_EXCEPTION.create();
         }
 
         return i;
@@ -328,7 +335,7 @@ public class HungerCommand implements CommandRegistrationCallback {
         if (i > 0) {
             source.sendSuccess(() -> Component.translatable("commands.decree.hunger.add.saturation.success", saturation), false);
         } else {
-            throw new SimpleCommandExceptionType(Component.translatable("commands.decree.hunger.add.saturation.failed")).create();
+            throw ADD_SATURATION_EXCEPTION.create();
         }
 
         return i;

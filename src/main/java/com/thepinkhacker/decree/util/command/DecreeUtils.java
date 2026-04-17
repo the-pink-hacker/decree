@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.thepinkhacker.decree.data.command.CommandConfig;
-import com.thepinkhacker.decree.registry.DecreeRegistries;
+import com.thepinkhacker.decree.registry.DecreeBuiltInRegistries;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.resources.ResourceKey;
@@ -19,7 +19,7 @@ public class DecreeUtils {
     ) {
         // TODO: Check for collisions
         LiteralArgumentBuilder<CommandSourceStack> builtCommand = command.apply(Commands.literal(key.identifier().getPath()));
-        CommandConfig config = DecreeRegistries.COMMAND_CONFIG.getValueOrThrow(key);
+        CommandConfig config = DecreeBuiltInRegistries.COMMAND_CONFIG.getValueOrThrow(key);
 
         if (config.prefix.optional) {
             dispatcher.register(builtCommand);

@@ -18,6 +18,8 @@ import net.minecraft.world.entity.TamableAnimal;
 import java.util.Collection;
 
 public class SetOwnerCommand implements CommandRegistrationCallback {
+    public static final SimpleCommandExceptionType EXCEPTION = new SimpleCommandExceptionType(Component.translatable("commands.decree.setowner.failed"));
+
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment) {
         LiteralCommandNode<CommandSourceStack> node = DecreeUtils.register(dispatcher, CommandConfigs.SET_OWNER, command -> command
@@ -53,7 +55,7 @@ public class SetOwnerCommand implements CommandRegistrationCallback {
         if (i > 0) {
             source.sendSuccess(() -> Component.translatable("commands.decree.setowner.success", player.getDisplayName()), false);
         } else {
-            throw new SimpleCommandExceptionType(Component.translatable("commands.decree.setowner.failed")).create();
+            throw EXCEPTION.create();
         }
 
         return i;

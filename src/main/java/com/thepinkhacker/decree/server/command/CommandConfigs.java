@@ -3,7 +3,7 @@ package com.thepinkhacker.decree.server.command;
 import com.thepinkhacker.decree.Decree;
 import com.thepinkhacker.decree.data.command.CommandConfig;
 import com.thepinkhacker.decree.data.command.CommandPrefix;
-import com.thepinkhacker.decree.registry.DecreeRegistries;
+import com.thepinkhacker.decree.registry.DecreeBuiltInRegistries;
 import com.thepinkhacker.decree.registry.DecreeRegistryKeys;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
@@ -29,7 +29,7 @@ public class CommandConfigs {
     private static ResourceKey<CommandConfig> register(String id, boolean prefixOptional) {
         Identifier decreeId = Decree.id(id);
         Registry.register(
-                DecreeRegistries.COMMAND_CONFIG,
+                DecreeBuiltInRegistries.COMMAND_CONFIG,
                 decreeId,
                 CommandConfig.of(CommandPrefix.of(decreeId.getNamespace(), prefixOptional))
         );

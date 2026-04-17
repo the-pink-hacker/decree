@@ -2,7 +2,7 @@ package com.thepinkhacker.decree.data.lang;
 
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.thepinkhacker.decree.Decree;
-import com.thepinkhacker.decree.server.command.NameCommand;
+import com.thepinkhacker.decree.server.command.*;
 import com.thepinkhacker.decree.world.DecreeGameRules;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
@@ -106,10 +106,32 @@ public class DecreeLanguageProvider extends FabricLanguageProvider {
                 "Override the max speed for minecarts with monster spawners."
         );
 
-        add(builder, NameCommand.ENTITY_FAILED, "Failed to name entity");
-        add(builder, NameCommand.ENTITY_REMOVE_FAILED, "Failed to remove entity name");
-        add(builder, NameCommand.ITEM_FAILED, "Failed to name item");
-        add(builder, NameCommand.ITEM_REMOVE_FAILED, "Failed to remove item name");
+        add(builder, NameCommand.ENTITY_EXCEPTION, "Failed to name entity");
+        add(builder, NameCommand.ENTITY_REMOVE_EXCEPTION, "Failed to remove entity name");
+        add(builder, NameCommand.ITEM_EXCEPTION, "Failed to name item");
+        add(builder, NameCommand.ITEM_REMOVE_EXCEPTION, "Failed to remove item name");
+
+        add(builder, HeadCommand.GIVE_EXCEPTION, "Failed to give head to player");
+        add(builder, HeadCommand.UPDATE_EXCEPTION, "Failed to update head block");
+
+        add(builder, RideCommand.EVICT_RIDERS_EXCEPTION, "Failed to evict rider(s)");
+        add(builder, RideCommand.START_RIDING_EXCEPTION, "Failed to ride the entity");
+        add(builder, RideCommand.STOP_RIDING_EXCEPTION, "Failed to dismount the entity");
+        add(builder, RideCommand.SUMMON_RIDE_EXCEPTION, "Failed to summon a ride");
+        add(builder, RideCommand.SUMMON_RIDER_EXCEPTION, "Failed to summon a rider");
+
+        add(builder, HealthCommand.SET_HEALTH_EXCEPTION, "Failed to set health");
+        add(builder, HealthCommand.ADD_HEALTH_EXCEPTION, "Failed to add health");
+        add(builder, HealthCommand.QUERY_HEALTH_EXCEPTION, "Failed to query health");
+
+        add(builder, SetOwnerCommand.EXCEPTION, "Failed to set pet's owner");
+
+        add(builder, HungerCommand.ADD_EXHAUSTION_EXCEPTION, "Failed to add exhaustion");
+        add(builder, HungerCommand.ADD_FOOD_EXCEPTION, "Failed to add food");
+        add(builder, HungerCommand.ADD_SATURATION_EXCEPTION, "Failed to add saturation");
+        add(builder, HungerCommand.SET_EXHAUSTION_EXCEPTION, "Failed to set exhaustion");
+        add(builder, HungerCommand.SET_FOOD_EXCEPTION, "Failed to set food");
+        add(builder, HungerCommand.SET_SATURATION_EXCEPTION, "Failed to set saturation");
 
         GenericTranslationBuilder.of(builder)
                 .child(GenericTranslationBuilder.Node.of("commands")
@@ -120,23 +142,18 @@ public class DecreeLanguageProvider extends FabricLanguageProvider {
                                 )
                                 .child(GenericTranslationBuilder.Node.of("ride")
                                         .child(GenericTranslationBuilder.Node.of("evict_riders")
-                                                .child("failed", "Failed to evict rider(s)")
                                                 .child("success", "Evicted rider(s)")
                                         )
                                         .child(GenericTranslationBuilder.Node.of("start_riding")
-                                                .child("failed", "Failed to ride the entity")
                                                 .child("success", "Mounted entities")
                                         )
                                         .child(GenericTranslationBuilder.Node.of("stop_riding")
-                                                .child("failed", "Failed to dismount the entity")
                                                 .child("success", "Dismounted entities")
                                         )
                                         .child(GenericTranslationBuilder.Node.of("summon_ride")
-                                                .child("failed", "Failed to summon a ride")
                                                 .child("success", "Summoned and mounted to a %s")
                                         )
                                         .child(GenericTranslationBuilder.Node.of("summon_rider")
-                                                .child("failed", "Failed to summon a rider")
                                                 .child("success", "Summoned and mounted a %s")
                                         )
                                 )
@@ -166,7 +183,6 @@ public class DecreeLanguageProvider extends FabricLanguageProvider {
                                 )
                                 .child(GenericTranslationBuilder.Node.of("head")
                                         .child(GenericTranslationBuilder.Node.of("give")
-                                                .child("failed", "Failed to give head to player")
                                                 .child("success", "Gave head to player")
                                         )
                                         .child(GenericTranslationBuilder.Node.of("query")
@@ -179,63 +195,50 @@ public class DecreeLanguageProvider extends FabricLanguageProvider {
                                         )
                                         .child(GenericTranslationBuilder.Node.of("update")
                                                 .child("success", "Updated head block")
-                                                .child("failed", "Failed to update head block")
                                         )
                                 )
                                 .child(GenericTranslationBuilder.Node.of("health")
                                         .child(GenericTranslationBuilder.Node.of("add")
-                                                .child("failed", "Failed to add health")
                                                 .child("success", "Added %s health")
                                         )
                                         .child(GenericTranslationBuilder.Node.of("query")
-                                                .child("failed", "Failed to query health")
                                                 .child("success", "Health is %s")
                                         )
                                         .child(GenericTranslationBuilder.Node.of("set")
-                                                .child("failed", "Failed to set health")
                                                 .child("success", "Set health to %s")
                                         )
                                 )
                                 .child(GenericTranslationBuilder.Node.of("hunger")
                                         .child(GenericTranslationBuilder.Node.of("add")
                                                 .child(GenericTranslationBuilder.Node.of("exhaustion")
-                                                        .child("failed", "Failed to add exhaustion")
                                                         .child("success", "Added %s exhaustion")
                                                 )
                                                 .child(GenericTranslationBuilder.Node.of("food")
-                                                        .child("failed", "Failed to add food")
                                                         .child("success", "Added %s food")
                                                 )
                                                 .child(GenericTranslationBuilder.Node.of("saturation")
-                                                        .child("failed", "Failed to add saturation")
                                                         .child("success", "Added %s saturation")
                                                 )
                                         )
                                         .child(GenericTranslationBuilder.Node.of("query")
                                                 .child(GenericTranslationBuilder.Node.of("exhaustion")
-                                                        .child("failed", "Failed to query exhaustion")
                                                         .child("success", "Player's exhaustion is %s")
                                                 )
                                                 .child(GenericTranslationBuilder.Node.of("food")
-                                                        .child("failed", "Failed to query food")
                                                         .child("success", "Player's food is %s")
                                                 )
                                                 .child(GenericTranslationBuilder.Node.of("saturation")
-                                                        .child("failed", "Failed to query saturation")
                                                         .child("success", "Player's saturation is %s")
                                                 )
                                         )
                                         .child(GenericTranslationBuilder.Node.of("set")
                                                 .child(GenericTranslationBuilder.Node.of("exhaustion")
-                                                        .child("failed", "Failed to set exhaustion")
                                                         .child("success", "Set exhaustion to %s")
                                                 )
                                                 .child(GenericTranslationBuilder.Node.of("food")
-                                                        .child("failed", "Failed to set food")
                                                         .child("success", "Set food to %s")
                                                 )
                                                 .child(GenericTranslationBuilder.Node.of("saturation")
-                                                        .child("failed", "Failed to set saturation")
                                                         .child("success", "Set saturation to %s")
                                                 )
                                         )
@@ -253,7 +256,6 @@ public class DecreeLanguageProvider extends FabricLanguageProvider {
                                         )
                                 )
                                 .child(GenericTranslationBuilder.Node.of("setowner")
-                                        .child("failed", "Failed to set pet's owner")
                                         .child("success", "Set pet's owner to %s")
                                 )
                         )
@@ -270,7 +272,7 @@ public class DecreeLanguageProvider extends FabricLanguageProvider {
         add(builder, gamerule, title);
         builder.add(gamerule.getDescriptionId() + ".description", description);
     }
-    
+
     private static <T> void add(TranslationBuilder builder, GameRule<T> gamerule, String title) {
         builder.add(gamerule.getDescriptionId(), title);
     }

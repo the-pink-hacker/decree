@@ -32,11 +32,10 @@ import java.util.Collection;
 import java.util.List;
 
 public class HeadCommand implements CommandRegistrationCallback {
-
-    private static final SimpleCommandExceptionType GIVE_EXCEPTION = new SimpleCommandExceptionType(
+    public static final SimpleCommandExceptionType GIVE_EXCEPTION = new SimpleCommandExceptionType(
             Component.translatable("commands.decree.head.give.failed")
     );
-    private static final SimpleCommandExceptionType UPDATE_EXCEPTION = new SimpleCommandExceptionType(
+    public static final SimpleCommandExceptionType UPDATE_EXCEPTION = new SimpleCommandExceptionType(
             Component.translatable("commands.decree.head.update.failed")
     );
 
