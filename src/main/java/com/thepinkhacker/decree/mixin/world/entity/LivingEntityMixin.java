@@ -20,7 +20,14 @@ import java.util.EnumSet;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity {
     @Unique
-    private static final EnumSet<Relative> DECREE_GLIDE_FLAGS = EnumSet.allOf(Relative.class);
+    private static final EnumSet<Relative> DECREE_GLIDE_FLAGS = EnumSet.of(
+            Relative.X,
+            Relative.Y,
+            Relative.Z,
+            Relative.DELTA_Y,
+            Relative.X_ROT,
+            Relative.Y_ROT
+    );
 
     public LivingEntityMixin(EntityType<?> entityType, Level level) {
         super(entityType, level);
