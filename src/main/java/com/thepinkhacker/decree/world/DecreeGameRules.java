@@ -97,7 +97,7 @@ public class DecreeGameRules {
             .minValue(0)
             .category(GameRuleCategory.MISC)
             .requiredFeatures(MINECART_IMPROVEMENTS)
-            .buildAndRegister(Decree.id("minecart_dismount_cooldown"));
+            .buildAndRegister(Decree.id("minecart_dismount_halt_cooldown"));
 
     public static final GameRule<Double> MINECART_HALT_FACTOR = GameRuleBuilder
             .forDouble(0.5)
