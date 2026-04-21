@@ -108,9 +108,23 @@ public class DecreeLanguageProvider extends FabricLanguageProvider {
 
         add(
                 builder,
-                DecreeGameRules.MINECART_DISMOUNT_STOP_COOLDOWN,
-                "Minecart Dismount Stop Cooldown",
-                "On dismount, for how many ticks a minecart should stop moving."
+                DecreeGameRules.MINECART_DISMOUNT_HALT_COOLDOWN,
+                "Minecart Dismount Halt Cooldown",
+                "On dismount, for how many ticks a minecart should halt."
+        );
+
+        add(
+                builder,
+                DecreeGameRules.MINECART_HALT_FACTOR,
+                "Minecart Halt Factor",
+                "The factor at which minecarts slow down."
+        );
+
+        add(
+                builder,
+                DecreeGameRules.MINECART_DISMOUNT_HALT_FACTOR,
+                "Minecart Dismount Halt Factor",
+                "The factor at which minecarts slow down after dismounting."
         );
 
         add(builder, NameCommand.ENTITY_EXCEPTION, "Failed to name entity");

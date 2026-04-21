@@ -1,4 +1,4 @@
-package com.thepinkhacker.decree.world.entity.vehicle;
+package com.thepinkhacker.decree.world.entity.vehicle.minecart;
 
 import net.minecraft.world.level.gamerules.GameRules;
 
@@ -8,6 +8,10 @@ public interface DismountStopCooldown {
     }
 
     default void decree$cancelCooldown() {
+        throw new AssertionError("Implemented in Mixin");
+    }
+
+    default boolean decree$shouldHalt() {
         throw new AssertionError("Implemented in Mixin");
     }
 }

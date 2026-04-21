@@ -1,6 +1,6 @@
 package com.thepinkhacker.decree.mixin.world.entity;
 
-import com.thepinkhacker.decree.world.entity.vehicle.DismountStopCooldown;
+import com.thepinkhacker.decree.world.entity.vehicle.minecart.DismountStopCooldown;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

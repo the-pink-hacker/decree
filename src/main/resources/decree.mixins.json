@@ -10,8 +10,9 @@
     "world.entity.item.ItemEntityMixin",
     "world.entity.monster.EndermanLeaveBlockGoalMixin",
     "world.entity.monster.EndermanTakeBlockGoalMixin",
-    "world.entity.vehicle.AbstractMinecartMixin",
-    "world.entity.vehicle.NewMinecartBehaviorMixin",
+    "world.entity.vehicle.minecart.AbstractMinecartMixin",
+    "world.entity.vehicle.minecart.NewMinecartBehaviorMixin",
+    "world.entity.vehicle.minecart.OldMinecartBehaviorMixin",
     "world.level.block.NetherPortalBlockMixin",
     "world.level.block.entity.SkullBlockEntityMixin"
   ],

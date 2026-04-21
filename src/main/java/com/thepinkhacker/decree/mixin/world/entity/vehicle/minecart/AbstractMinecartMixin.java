@@ -1,10 +1,9 @@
-package com.thepinkhacker.decree.mixin.world.entity.vehicle;
+package com.thepinkhacker.decree.mixin.world.entity.vehicle.minecart;
 
 import com.thepinkhacker.decree.world.DecreeGameRules;
-import com.thepinkhacker.decree.world.entity.vehicle.DismountStopCooldown;
+import com.thepinkhacker.decree.world.entity.vehicle.minecart.DismountStopCooldown;
 import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
 import net.minecraft.world.level.gamerules.GameRules;
-import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,18 +15,11 @@ public abstract class AbstractMinecartMixin implements DismountStopCooldown {
     @Unique
     private int dismountCooldown;
 
-    @Unique
-    private void zeroVelocity() {
-        AbstractMinecart self = (AbstractMinecart)(Object)this;
-        self.setDeltaMovement(Vec3.ZERO);
-    }
-
     @Override
     public void decree$startStopCooldown(GameRules rules) {
-        int ruleValue = rules.get(DecreeGameRules.MINECART_DISMOUNT_STOP_COOLDOWN);
+        int ruleValue = rules.get(DecreeGameRules.MINECART_DISMOUNT_HALT_COOLDOWN);
 
         if (ruleValue >= 0) {
-            zeroVelocity();
             dismountCooldown = ruleValue;
         }
     }
@@ -43,8 +35,12 @@ public abstract class AbstractMinecartMixin implements DismountStopCooldown {
     )
     private void decree$tick(CallbackInfo ci) {
         if (dismountCooldown > 0) {
-            zeroVelocity();
             dismountCooldown--;
         }
+    }
+
+    @Override
+    public boolean decree$shouldHalt() {
+        return dismountCooldown > 0;
     }
 }

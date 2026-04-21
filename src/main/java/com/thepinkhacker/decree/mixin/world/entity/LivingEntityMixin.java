@@ -1,7 +1,7 @@
 package com.thepinkhacker.decree.mixin.world.entity;
 
 import com.thepinkhacker.decree.registry.tag.DecreeDimensionTypeTags;
-import com.thepinkhacker.decree.world.entity.vehicle.DismountStopCooldown;
+import com.thepinkhacker.decree.world.entity.vehicle.minecart.DismountStopCooldown;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;

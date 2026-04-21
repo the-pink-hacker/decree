@@ -46,49 +46,71 @@ public class DecreeGameRules {
     public static final GameRule<Integer> MINECART_MAX_SPEED_RIDER = GameRuleBuilder
             .forInteger(-1)
             .range(-1, 1_000)
+            .category(GameRuleCategory.MISC)
             .requiredFeatures(MINECART_IMPROVEMENTS)
             .buildAndRegister(Decree.id("minecart_max_speed_rider"));
 
     public static final GameRule<Integer> MINECART_MAX_SPEED_CHEST = GameRuleBuilder
             .forInteger(-1)
             .range(-1, 1_000)
+            .category(GameRuleCategory.MISC)
             .requiredFeatures(MINECART_IMPROVEMENTS)
             .buildAndRegister(Decree.id("minecart_max_speed_chest"));
 
     public static final GameRule<Integer> MINECART_MAX_SPEED_FURNACE = GameRuleBuilder
             .forInteger(-1)
             .range(-1, 1_000)
+            .category(GameRuleCategory.MISC)
             .requiredFeatures(MINECART_IMPROVEMENTS)
             .buildAndRegister(Decree.id("minecart_max_speed_furnace"));
 
     public static final GameRule<Integer> MINECART_MAX_SPEED_HOPPER = GameRuleBuilder
             .forInteger(-1)
             .range(-1, 1_000)
+            .category(GameRuleCategory.MISC)
             .requiredFeatures(MINECART_IMPROVEMENTS)
             .buildAndRegister(Decree.id("minecart_max_speed_hopper"));
 
     public static final GameRule<Integer> MINECART_MAX_SPEED_TNT = GameRuleBuilder
             .forInteger(-1)
             .range(-1, 1_000)
+            .category(GameRuleCategory.MISC)
             .requiredFeatures(MINECART_IMPROVEMENTS)
             .buildAndRegister(Decree.id("minecart_max_speed_tnt"));
 
     public static final GameRule<Integer> MINECART_MAX_SPEED_COMMAND_BLOCK = GameRuleBuilder
             .forInteger(-1)
             .range(-1, 1_000)
+            .category(GameRuleCategory.MISC)
             .requiredFeatures(MINECART_IMPROVEMENTS)
             .buildAndRegister(Decree.id("minecart_max_speed_command_block"));
 
     public static final GameRule<Integer> MINECART_MAX_SPEED_SPAWNER = GameRuleBuilder
             .forInteger(-1)
             .range(-1, 1_000)
+            .category(GameRuleCategory.MISC)
             .requiredFeatures(MINECART_IMPROVEMENTS)
             .buildAndRegister(Decree.id("minecart_max_speed_command_spawner"));
 
-    public static final GameRule<Integer> MINECART_DISMOUNT_STOP_COOLDOWN = GameRuleBuilder
-            .forInteger(-1)
-            .minValue(-1)
+    public static final GameRule<Integer> MINECART_DISMOUNT_HALT_COOLDOWN = GameRuleBuilder
+            .forInteger(0)
+            .minValue(0)
+            .category(GameRuleCategory.MISC)
+            .requiredFeatures(MINECART_IMPROVEMENTS)
             .buildAndRegister(Decree.id("minecart_dismount_cooldown"));
+
+    public static final GameRule<Double> MINECART_HALT_FACTOR = GameRuleBuilder
+            .forDouble(0.5)
+            .range(0.0, 1.0)
+            .category(GameRuleCategory.MISC)
+            .buildAndRegister(Decree.id("minecart_halt_factor"));
+
+    public static final GameRule<Double> MINECART_DISMOUNT_HALT_FACTOR = GameRuleBuilder
+            .forDouble(0.95)
+            .range(0.0, 1.0)
+            .category(GameRuleCategory.MISC)
+            .requiredFeatures(MINECART_IMPROVEMENTS)
+            .buildAndRegister(Decree.id("minecart_dismount_halt_factor"));
 
     // Java is weird and won't init the variables unless this runs
     // Otherwise it would try to init after the registry is frozen
