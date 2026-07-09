@@ -17,10 +17,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Collection;
@@ -208,7 +205,7 @@ public class RideCommand implements CommandRegistrationCallback {
 
             Vec3 ridePos = ride.position();
 
-            Entity rider = EntityType.loadEntityRecursive(nbt, world, EntitySpawnReason.COMMAND, entity -> {
+            Entity rider = EntityType.loadEntityRecursive(nbt, world, new EntitySpawnRequest(EntitySpawnReason.COMMAND, false), entity -> {
                 entity.setPos(ridePos);
                 return entity;
             });
@@ -246,7 +243,7 @@ public class RideCommand implements CommandRegistrationCallback {
 
         Vec3 riderPos = rider.position();
 
-        Entity ride = EntityType.loadEntityRecursive(nbt, world, EntitySpawnReason.COMMAND, entity -> {
+        Entity ride = EntityType.loadEntityRecursive(nbt, world, new EntitySpawnRequest(EntitySpawnReason.COMMAND, false), entity -> {
             entity.setPos(riderPos);
             return entity;
         });
