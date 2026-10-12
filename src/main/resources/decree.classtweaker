@@ -2,8 +2,8 @@ classTweaker v1 official
 
 accessible field net/minecraft/world/food/FoodData exhaustionLevel F
 
-accessible class net/minecraft/world/entity/monster/EnderMan$EndermanTakeBlockGoal
-accessible class net/minecraft/world/entity/monster/EnderMan$EndermanLeaveBlockGoal
+accessible class net/minecraft/world/entity/monster/Enderman$EndermanTakeBlockGoal
+accessible class net/minecraft/world/entity/monster/Enderman$EndermanLeaveBlockGoal
 
 accessible method net/minecraft/core/registries/BuiltInRegistries registerSimple (Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/core/registries/BuiltInRegistries$RegistryBootstrap;)Lnet/minecraft/core/Registry;
 accessible class net/minecraft/core/registries/BuiltInRegistries$RegistryBootstrap
